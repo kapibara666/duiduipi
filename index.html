@@ -1,0 +1,1328 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>怼怼皮 - 你的AI嘴替助手</title>
+<meta name="description" content="被人用话噎住不知道怎么回？怼怼皮帮你一键生成高情商回怼，8种身份6种风格，再也不吃哑巴亏。">
+<style>
+:root {
+  --bg: #faf8f5;
+  --card-bg: #ffffff;
+  --text: #2d2d2d;
+  --text-secondary: #999;
+  --text-hint: #bbb;
+  --border: #e8e4df;
+  --primary: #7c5ce7;
+  --primary-light: #f3f0ff;
+  --primary-soft: #ede8fd;
+  --bubble-bg: #f2f2f2;
+  --danger: #e74c3c;
+  --success: #27ae60;
+  --warning: #f0a040;
+  --radius: 16px;
+  --radius-sm: 10px;
+  --radius-xs: 8px;
+  --shadow: 0 2px 12px rgba(0,0,0,0.06);
+  --shadow-lg: 0 8px 30px rgba(0,0,0,0.12);
+}
+
+body.dark {
+  --bg: #1a1a2e;
+  --card-bg: #252540;
+  --text: #e0e0e0;
+  --text-secondary: #888;
+  --text-hint: #666;
+  --border: #35355a;
+  --primary: #a78bfa;
+  --primary-light: #2a2540;
+  --primary-soft: #302b50;
+  --bubble-bg: #35355a;
+  --shadow: 0 2px 12px rgba(0,0,0,0.2);
+  --shadow-lg: 0 8px 30px rgba(0,0,0,0.3);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.6;
+  transition: background 0.3s, color 0.3s;
+}
+
+.app-container {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 20px 16px 80px;
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.header-left { flex:1; }
+.logo {
+  font-size: 28px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #667eea 0%, #a855f7 50%, #d946ef 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.logo-sub {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: -2px;
+}
+.dark-toggle {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: var(--card-bg);
+  font-size: 20px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.dark-toggle:hover { border-color: var(--primary); }
+
+/* Sections */
+.section { margin-top: 20px; }
+.section-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+  letter-spacing: 0.5px;
+}
+
+/* Identity tags */
+.identity-row {
+  display: flex; flex-wrap: wrap; gap: 8px;
+}
+.identity-tag {
+  padding: 8px 14px;
+  border-radius: 20px;
+  border: 1.5px solid var(--border);
+  background: var(--card-bg);
+  font-size: 14px;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.2s;
+  user-select: none;
+  white-space: nowrap;
+}
+.identity-tag:hover { border-color: var(--primary); }
+.identity-tag.selected {
+  background: var(--primary-soft);
+  border-color: var(--primary);
+  color: var(--primary);
+  font-weight: 600;
+}
+
+/* Style cards */
+.style-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.style-card {
+  padding: 12px 8px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+  background: var(--card-bg);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+  user-select: none;
+}
+.style-card:hover { border-color: var(--primary); }
+.style-card.selected {
+  border-color: var(--primary);
+  background: var(--primary-light);
+}
+.style-card .style-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+.style-card.selected .style-name { color: var(--primary); }
+.style-card .style-desc {
+  font-size: 10px;
+  color: var(--text-hint);
+  margin-top: 2px;
+  line-height: 1.3;
+}
+
+/* Scenario presets */
+.scenario-row {
+  display: flex; flex-wrap: wrap; gap: 6px;
+}
+.scenario-tag {
+  padding: 6px 12px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  font-size: 12px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s;
+  user-select: none;
+  white-space: nowrap;
+}
+.scenario-tag:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: var(--primary-light);
+}
+
+/* Input area */
+.input-card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  border: 2px solid var(--border);
+  padding: 4px;
+  transition: border-color 0.2s;
+  position: relative;
+}
+.input-card:focus-within { border-color: var(--primary); }
+.input-card textarea {
+  width: 100%;
+  border: none;
+  outline: none;
+  resize: none;
+  font-size: 15px;
+  line-height: 1.6;
+  padding: 12px 36px 12px 12px;
+  background: transparent;
+  color: var(--text);
+  font-family: inherit;
+  min-height: 80px;
+}
+.input-card textarea::placeholder { color: var(--text-hint); }
+.input-clear {
+  position: absolute;
+  top: 10px; right: 10px;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: var(--border);
+  color: var(--text-secondary);
+  font-size: 14px;
+  cursor: pointer;
+  display: none;
+  align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+.input-clear.visible { display: flex; }
+.input-clear:hover { background: #ddd; color: #333; }
+.char-count {
+  text-align: right;
+  font-size: 11px;
+  color: var(--text-hint);
+  padding: 4px 12px 8px;
+}
+
+/* Profanity warning */
+.profanity-warning {
+  display: none;
+  color: var(--danger);
+  font-size: 12px;
+  margin-top: 4px;
+  padding-left: 4px;
+}
+
+/* Usage bar */
+.usage-bar {
+  text-align: center;
+  margin-top: 8px;
+}
+.usage-text {
+  font-size: 11px;
+  color: var(--text-hint);
+}
+.usage-text.expert { color: var(--primary); }
+
+/* Generate button */
+.generate-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: var(--radius);
+  border: none;
+  background: linear-gradient(135deg, #667eea, #a855f7);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 12px;
+  letter-spacing: 1px;
+}
+.generate-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 20px rgba(124,92,231,0.35);
+}
+.generate-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Results */
+.results-section { margin-top: 20px; }
+.result-bubble {
+  background: var(--bubble-bg);
+  border-radius: 18px 18px 18px 4px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  position: relative;
+  animation: fadeInUp 0.3s ease;
+}
+@keyframes fadeInUp {
+  from { opacity:0; transform:translateY(10px); }
+  to { opacity:1; transform:translateY(0); }
+}
+.result-bubble .result-text {
+  font-size: 15px;
+  line-height: 1.6;
+  padding-right: 28px;
+  word-break: break-word;
+}
+.result-bubble .copy-btn {
+  position: absolute;
+  top: 12px; right: 12px;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex; align-items: center; justify-content: center;
+}
+.result-bubble .copy-btn:hover { color: var(--primary); background: rgba(124,92,231,0.1); }
+.result-bubble .copy-btn.copied { color: var(--success); }
+.result-bubble .tune-btns {
+  display: flex; gap: 8px;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(0,0,0,0.06);
+}
+.result-bubble .tune-btn {
+  padding: 4px 10px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  font-size: 12px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.result-bubble .tune-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+.result-bubble .tune-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Again + Clear buttons */
+.result-actions {
+  display: flex; gap: 8px;
+  margin-top: 8px;
+}
+.again-btn, .clear-results-btn {
+  flex:1;
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+  background: var(--card-bg);
+  font-size: 13px;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.again-btn:hover { border-color: var(--primary); color: var(--primary); }
+.clear-results-btn:hover { border-color: var(--danger); color: var(--danger); }
+.again-btn:disabled, .clear-results-btn:disabled { opacity:0.4; cursor:not-allowed; }
+
+/* Upgrade card */
+.upgrade-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 100;
+  align-items: center; justify-content: center;
+  padding: 20px;
+}
+.upgrade-overlay.visible { display: flex; }
+.upgrade-card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 24px;
+  max-width: 380px;
+  width: 100%;
+  box-shadow: var(--shadow-lg);
+  text-align: center;
+}
+.upgrade-card h3 {
+  font-size: 18px;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+.upgrade-card .upgrade-subtitle {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+}
+.upgrade-card .upgrade-info {
+  text-align: left;
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 2;
+  margin-bottom: 20px;
+  padding: 12px;
+  background: var(--primary-light);
+  border-radius: var(--radius-sm);
+}
+.upgrade-card .upgrade-btn {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 8px;
+  transition: all 0.15s;
+}
+.upgrade-btn.primary {
+  background: linear-gradient(135deg, #667eea, #a855f7);
+  color: #fff;
+}
+.upgrade-btn.ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+.upgrade-btn.primary:hover { opacity:0.9; }
+.upgrade-btn.ghost:hover { border-color: var(--text-secondary); }
+
+/* Welcome guide */
+.guide-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  z-index: 200;
+  align-items: center; justify-content: center;
+  padding: 20px;
+}
+.guide-overlay.visible { display: flex; }
+.guide-card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 32px 24px 24px;
+  max-width: 360px;
+  width: 100%;
+  box-shadow: var(--shadow-lg);
+  text-align: center;
+}
+.guide-card .guide-emoji { font-size: 48px; margin-bottom: 12px; }
+.guide-card h2 {
+  font-size: 22px;
+  margin-bottom: 6px;
+  color: var(--text);
+}
+.guide-card .guide-subtitle {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+}
+.guide-card .guide-steps {
+  text-align: left;
+  font-size: 14px;
+  color: var(--text);
+  line-height: 2.2;
+  margin-bottom: 24px;
+  padding: 12px 16px;
+  background: var(--primary-light);
+  border-radius: var(--radius-sm);
+}
+.guide-card .guide-start-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: var(--radius-sm);
+  border: none;
+  background: linear-gradient(135deg, #667eea, #a855f7);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.guide-card .guide-start-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(124,92,231,0.3);
+}
+
+/* Settings */
+.settings-section { margin-top: 24px; }
+.settings-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 10px;
+  border: none;
+  background: transparent;
+  color: var(--text-hint);
+  font-size: 13px;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.settings-toggle:hover { color: var(--text-secondary); }
+.settings-toggle .gear { font-size: 16px; transition: transform 0.3s; }
+.settings-panel {
+  display: none;
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  padding: 20px;
+  margin-top: 4px;
+}
+.settings-panel.open { display: block; }
+.settings-panel label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+  margin-top: 14px;
+}
+.settings-panel label:first-child { margin-top: 0; }
+.input-group {
+  display: flex; gap: 6px;
+  position: relative;
+}
+
+/* HACK: the eye-toggle's absolute positioning relies on this */
+.input-group input {
+  flex: 1;
+  padding: 10px 40px 10px 12px;
+  border-radius: var(--radius-xs);
+  border: 1.5px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+  font-family: monospace;
+}
+.input-group input:focus { border-color: var(--primary); }
+.eye-toggle {
+  position: absolute;
+  right: 2px; top: 2px; bottom: 2px;
+  width: 36px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 16px;
+  color: var(--text-hint);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1;
+}
+.eye-toggle:hover { color: var(--text-secondary); }
+.test-btn {
+  padding: 8px 14px;
+  border-radius: var(--radius-xs);
+  border: 1.5px solid var(--primary);
+  background: transparent;
+  color: var(--primary);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.test-btn:hover { background: var(--primary-light); }
+.test-result {
+  font-size: 12px; margin-top: 6px;
+}
+.test-result.success { color: var(--success); }
+.test-result.fail { color: var(--danger); }
+.mode-status {
+  font-size: 13px; color: var(--text-secondary);
+  margin-top: 14px; padding-top: 14px;
+  border-top: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.mode-switch-btn {
+  background: none; border: none;
+  color: var(--primary);
+  font-size: 12px;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  top: 20px; left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-size: 13px;
+  z-index: 300;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+.toast.show { opacity:1; }
+body.dark .toast { background: #555; }
+
+/* Responsive */
+@media (min-width: 480px) {
+  .app-container { padding: 28px 20px 80px; }
+  .style-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .style-card { padding: 14px 10px; }
+}
+@media (max-width: 360px) {
+  .style-grid { grid-template-columns: repeat(2, 1fr); }
+  .identity-tag { padding: 6px 10px; font-size: 13px; }
+}
+</style>
+</head>
+<body>
+
+<div class="app-container">
+  <!-- Header -->
+  <header class="header">
+    <div class="header-left">
+      <div class="logo">怼怼皮 🦸</div>
+      <div class="logo-sub">你身边最会说话的朋友，有点皮，但句句在理</div>
+    </div>
+    <button class="dark-toggle" id="darkToggle" title="切换暗黑模式">☀️</button>
+  </header>
+
+  <!-- Identity -->
+  <section class="section">
+    <div class="section-label">选择身份</div>
+    <div class="identity-row" id="identityRow"></div>
+  </section>
+
+  <!-- Style -->
+  <section class="section">
+    <div class="section-label">选择风格</div>
+    <div class="style-grid" id="styleGrid"></div>
+  </section>
+
+  <!-- Scenarios -->
+  <section class="section">
+    <div class="section-label">高频场景</div>
+    <div class="scenario-row" id="scenarioRow"></div>
+  </section>
+
+  <!-- Input -->
+  <section class="section">
+    <div class="input-card">
+      <textarea id="userInput" placeholder="输入那句让你不爽的话..." maxlength="200" rows="2"></textarea>
+      <button class="input-clear" id="inputClear">✕</button>
+    </div>
+    <div class="char-count"><span id="charCount">0</span>/200</div>
+    <div class="profanity-warning" id="profanityWarning">请输入合适的对话内容</div>
+  </section>
+
+  <!-- Usage bar -->
+  <div class="usage-bar"><span class="usage-text" id="usageText"></span></div>
+
+  <!-- Generate -->
+  <button class="generate-btn" id="generateBtn">生成回怼</button>
+
+  <!-- Results -->
+  <section class="results-section" id="resultsSection"></section>
+  <div class="result-actions" id="resultActions" style="display:none">
+    <button class="again-btn" id="againBtn">🔄 再来一条</button>
+    <button class="clear-results-btn" id="clearResultsBtn">🗑 清空记录</button>
+  </div>
+
+  <!-- Upgrade overlay -->
+  <div class="upgrade-overlay" id="upgradeOverlay">
+    <div class="upgrade-card">
+      <h3>今日免费次数已用完（20/20）</h3>
+      <p class="upgrade-subtitle">还想继续玩？开启专家模式，不限次数随便用。</p>
+      <div class="upgrade-info">
+        放心，这些事你得知道：<br>
+        💰 每次生成仅需约 0.0007 元，充 1 元可用很多次<br>
+        🔑 使用你自己的 DeepSeek 账户，费用由 DeepSeek 直接收取<br>
+        🙅 与我无关，我不经手你的任何费用<br>
+        🎁 DeepSeek 新用户通常有免费额度，大概率够你用很久
+      </div>
+      <button class="upgrade-btn primary" id="upgradeGoBtn">去 DeepSeek 免费注册</button>
+      <button class="upgrade-btn ghost" id="upgradeDismissBtn">下次再说</button>
+    </div>
+  </div>
+
+  <!-- Welcome guide -->
+  <div class="guide-overlay" id="guideOverlay">
+    <div class="guide-card">
+      <div class="guide-emoji">🦸</div>
+      <h2>欢迎使用怼怼皮</h2>
+      <p class="guide-subtitle">你身边最会说话的朋友，有点皮，但句句在理</p>
+      <div class="guide-steps">
+        1️⃣ 选身份<br>
+        2️⃣ 选风格<br>
+        3️⃣ 输入那句话
+      </div>
+      <button class="guide-start-btn" id="guideStartBtn">开始吧，帮我出招</button>
+    </div>
+  </div>
+
+  <!-- Settings -->
+  <section class="settings-section">
+    <button class="settings-toggle" id="settingsToggle">
+      <span class="gear">⚙️</span> 设置
+    </button>
+    <div class="settings-panel" id="settingsPanel">
+      <label>公共 API Key（管理员设置）</label>
+      <div class="input-group" style="position:relative">
+        <input type="password" id="publicKeyInput" placeholder="sk-..." autocomplete="off">
+        <button class="eye-toggle" data-target="publicKeyInput">👁️</button>
+      </div>
+
+      <label>我的 API Key（专家模式）</label>
+      <div class="input-group" style="position:relative">
+        <input type="password" id="userKeyInput" placeholder="sk-..." autocomplete="off">
+        <button class="eye-toggle" data-target="userKeyInput">👁️</button>
+      </div>
+      <button class="test-btn" id="testBtn" style="margin-top:10px">🔍 测试连接</button>
+      <div class="test-result" id="testResult"></div>
+      <div class="mode-status" id="modeStatus"></div>
+    </div>
+  </section>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ========== Constants ==========
+const SYSTEM_PROMPT = `你是一个专业的沟通教练。用户正在面临一个社交冲突。请你根据用户选择的【身份】和【模式】，生成一句精准的回怼文案。
+身份设定如下：
+- 小学生：天真、直接、爱提规则和老师。
+- 中学生：带点小幽默和网络梗，有个性。
+- 大学生：带点讽刺和清醒，善用校园梗，表面客气实则疏远。
+- 职场新人：礼貌、小心，但知道用流程保护自己。
+- 职场老手：绵里藏针，用逻辑、数据和公司大局观反击。
+- 亲密关系：重在表达感受，用'我感觉到...'句式，不激化矛盾。
+- 家庭亲戚：幽默自嘲、打太极，不正面冲突，也不吃亏。
+- 通用：高情商、得体、不卑不亢。
+
+模式设定如下：
+- 直接开怼：简单直接，不留情面，但不带脏话。
+- 幽默化解：用讽刺、自嘲或玩梗的方式化解。
+- 优雅反击：冷静、理性，表明底线，让人无话可说。
+- 阴阳怪气：表面在夸、在认同，实则句句扎心，用最礼貌的语气说最狠的话。
+- 把天聊死：用一个让人无法接话的短句，迅速终止对话，但保持基本礼貌，不要过于冷漠。
+- 真诚必杀技：用最真诚的方式说出自己的真实感受，不攻击对方，但让对方意识到自己的问题。
+
+用户可能正在进行微调：
+- 如果用户要求"再狠一点"，请把上一轮的回怼改得更直接、更犀利，语气加重，但仍不带脏话。
+- 如果用户要求"委婉一点"，请把上一轮的回怼改得更委婉、更温和，保持立场但语气放缓。
+
+请严格遵循以上设定。即使是完全相同的输入，也请尽量给出不同措辞的回复。尽量少用emoji，方便用户粘贴到微信。只输出一句回怼文案，不要任何解释，不要带前缀，不要带引号包裹。`;
+
+const IDENTITIES = ['小学生','中学生','大学生','职场新人','职场老手','亲密关系','家庭亲戚','通用'];
+const STYLES = [
+  { name:'直接开怼', desc:'不留情面，直接了当' },
+  { name:'幽默化解', desc:'玩梗自嘲，化解尴尬' },
+  { name:'优雅反击', desc:'冷静克制，以理服人' },
+  { name:'阴阳怪气', desc:'表面客气，句句扎心' },
+  { name:'把天聊死', desc:'一句话终结话题' },
+  { name:'真诚必杀技', desc:'说出感受，不伤感情' },
+];
+const SCENARIOS = [
+  '你怎么连这个都不会？','你胖了/瘦了。','什么时候结婚？',
+  '你这方案不行，重做。','大家都是这么过来的。','这有什么好生气的？',
+  '你是不是太敏感了？','你还年轻，以后就懂了。','我都是为你好。',
+  '别人都能做到，怎么就你不行？',
+];
+const PROFANITY_LIST = ['fuck','shit','操你','傻逼','煞笔','妈逼','你妈逼','鸡巴','王八蛋','龟儿子','狗日的','婊子','贱人','去死吧','草泥马','日你','操蛋','肏','屌丝','妈蛋','狗屁','混蛋'];
+const FREE_LIMIT = 20;
+const API_URL = 'https://api.deepseek.com/chat/completions';
+const TIMEOUT_MS = 15000;
+
+// ========== State ==========
+let state = {
+  identity: '通用',
+  style: '优雅反击',
+  mode: 'free', // 'free' | 'expert'
+  results: [],
+  currentInput: '',
+  isGenerating: false,
+  darkMode: false,
+};
+
+// ========== Helpers ==========
+function $(id) { return document.getElementById(id); }
+function lsGet(key, fallback) {
+  try { const v = localStorage.getItem('ddp_' + key); return v !== null ? JSON.parse(v) : fallback; }
+  catch(e) { return fallback; }
+}
+function lsSet(key, value) {
+  try { localStorage.setItem('ddp_' + key, JSON.stringify(value)); } catch(e) {}
+}
+
+function getPublicKey() {
+  return ($('publicKeyInput').value || '').trim();
+}
+function getUserKey() {
+  return ($('userKeyInput').value || '').trim();
+}
+function getActiveKey() {
+  const uk = getUserKey();
+  if (uk) return uk;
+  return getPublicKey();
+}
+function getMode() {
+  return getUserKey() ? 'expert' : 'free';
+}
+
+function getToday() {
+  return new Date().toISOString().slice(0, 10);
+}
+function getDailyUsage() {
+  const d = lsGet('daily_usage', { date: '', count: 0 });
+  if (d.date !== getToday()) return { date: getToday(), count: 0 };
+  return d;
+}
+function incrementUsage() {
+  const d = getDailyUsage();
+  d.count++;
+  lsSet('daily_usage', d);
+}
+function getRemaining() {
+  return Math.max(0, FREE_LIMIT - getDailyUsage().count);
+}
+
+// Profanity check
+function hasProfanity(text) {
+  const lower = text.toLowerCase();
+  return PROFANITY_LIST.some(w => lower.includes(w.toLowerCase()));
+}
+
+// Toast
+let toastTimer;
+function showToast(msg, duration = 2000) {
+  const t = $('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), duration);
+}
+
+// ========== UI Rendering ==========
+function renderIdentities() {
+  const row = $('identityRow');
+  row.innerHTML = IDENTITIES.map(id =>
+    `<span class="identity-tag${id === state.identity ? ' selected' : ''}" data-identity="${id}">${id}</span>`
+  ).join('');
+}
+function renderStyles() {
+  const grid = $('styleGrid');
+  grid.innerHTML = STYLES.map(s =>
+    `<div class="style-card${s.name === state.style ? ' selected' : ''}" data-style="${s.name}">
+      <div class="style-name">${s.name}</div>
+      <div class="style-desc">${s.desc}</div>
+    </div>`
+  ).join('');
+}
+function renderScenarios() {
+  $('scenarioRow').innerHTML = SCENARIOS.map(s =>
+    `<span class="scenario-tag" data-scenario="${s.replace(/"/g,'&quot;')}">${s}</span>`
+  ).join('');
+}
+function renderUsage() {
+  const el = $('usageText');
+  const mode = getMode();
+  if (mode === 'expert') {
+    el.className = 'usage-text expert';
+    el.textContent = '🧑‍🔬 专家模式 · 无限使用';
+  } else {
+    el.className = 'usage-text';
+    el.textContent = `今日免费剩余：${getRemaining()}/${FREE_LIMIT}`;
+  }
+  // update mode status in settings
+  renderModeStatus();
+}
+function renderModeStatus() {
+  const el = $('modeStatus');
+  const mode = getMode();
+  if (mode === 'expert') {
+    el.innerHTML = `当前：<strong>🧑‍🔬 专家模式</strong> <button class="mode-switch-btn" id="switchToFree">切换回免费模式</button>`;
+  } else {
+    el.innerHTML = `当前：<strong>免费模式</strong>`;
+  }
+}
+
+function renderResults() {
+  const section = $('resultsSection');
+  const actions = $('resultActions');
+  if (state.results.length === 0) {
+    section.innerHTML = '';
+    actions.style.display = 'none';
+    return;
+  }
+  section.innerHTML = state.results.map((r, i) => `
+    <div class="result-bubble" data-index="${i}">
+      <button class="copy-btn" data-index="${i}" title="复制">📋</button>
+      <div class="result-text">${escapeHtml(r.response)}</div>
+      <div class="tune-btns">
+        <button class="tune-btn tune-harsher" data-index="${i}">🔥 再狠一点</button>
+        <button class="tune-btn tune-softer" data-index="${i}">❄️ 委婉一点</button>
+      </div>
+    </div>
+  `).join('');
+  actions.style.display = 'flex';
+  $('clearResultsBtn').style.display = state.results.length > 2 ? '' : 'none';
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function updateClearButton() {
+  const input = $('userInput');
+  const clear = $('inputClear');
+  if (input.value.trim().length > 0) {
+    clear.classList.add('visible');
+  } else {
+    clear.classList.remove('visible');
+  }
+}
+
+// ========== API Call ==========
+async function callDeepSeek(messages) {
+  const key = getActiveKey();
+  if (!key) throw new Error('no_key');
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), TIMEOUT_MS);
+
+  try {
+    const resp = await fetch(API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${key}`,
+      },
+      body: JSON.stringify({
+        model: 'deepseek-chat',
+        messages: messages,
+        max_tokens: 150,
+        temperature: 0.8,
+      }),
+      signal: controller.signal,
+    });
+
+    if (!resp.ok) {
+      const errData = await resp.json().catch(() => ({}));
+      const errMsg = (errData.error?.message || '').toLowerCase();
+      if (resp.status === 401 || errMsg.includes('authentication') || errMsg.includes('auth')) {
+        throw new Error('auth_error');
+      }
+      if (errMsg.includes('content') || errMsg.includes('safety') || errMsg.includes('inappropriate')) {
+        throw new Error('content_safety');
+      }
+      throw new Error('api_error');
+    }
+
+    const data = await resp.json();
+    const content = data.choices?.[0]?.message?.content || '';
+    return content.trim();
+  } catch (e) {
+    if (e.name === 'AbortError') throw new Error('timeout');
+    throw e;
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+
+// ========== Actions ==========
+async function doGenerate(inputText, tuneAction) {
+  if (state.isGenerating) return;
+  const input = inputText.trim();
+  if (!input) { showToast('请输入内容'); return; }
+  if (hasProfanity(input)) {
+    $('profanityWarning').style.display = 'block';
+    return;
+  }
+  $('profanityWarning').style.display = 'none';
+
+  // Check free quota
+  if (getMode() === 'free' && getRemaining() <= 0 && !tuneAction) {
+    $('upgradeOverlay').classList.add('visible');
+    return;
+  }
+
+  state.isGenerating = true;
+  const btn = $('generateBtn');
+  btn.textContent = '生成中...';
+  btn.disabled = true;
+
+  // Build messages
+  let messages = [];
+  if (tuneAction === 'harsher' || tuneAction === 'softer') {
+    // Fine-tuning: include conversation context
+    const lastResult = state.results[state.results.length - 1];
+    messages = [
+      { role: 'system', content: SYSTEM_PROMPT },
+      { role: 'user', content: `身份：${state.identity}\n模式：${state.style}\n对方的原话：${state.currentInput}` },
+      { role: 'assistant', content: lastResult.response },
+      { role: 'user', content: tuneAction === 'harsher' ? '再狠一点' : '委婉一点' },
+    ];
+  } else {
+    // Fresh generation or "再来一条"
+    messages = [
+      { role: 'system', content: SYSTEM_PROMPT },
+      { role: 'user', content: `身份：${state.identity}\n模式：${state.style}\n对方的原话：${input}` },
+    ];
+    state.currentInput = input;
+  }
+
+  try {
+    const response = await callDeepSeek(messages);
+    if (!tuneAction) {
+      state.results.push({
+        id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+        input: state.currentInput,
+        response: response || '(生成内容为空，请重试)',
+        timestamp: Date.now(),
+      });
+      if (getMode() === 'free') incrementUsage();
+    }
+    // Return response for fine-tuning handling
+    btn.textContent = '生成回怼';
+    btn.disabled = false;
+    state.isGenerating = false;
+    renderResults();
+    renderUsage();
+    return response;
+  } catch (e) {
+    btn.textContent = '生成回怼';
+    btn.disabled = false;
+    state.isGenerating = false;
+    if (e.message === 'timeout') {
+      showToast('生成超时，请检查网络后重试');
+    } else if (e.message === 'auth_error') {
+      showToast('公共免费额度暂时不可用，请开启专家模式使用自己的Key');
+      // Scroll to settings
+      $('settingsPanel').classList.add('open');
+      $('settingsToggle').scrollIntoView({ behavior: 'smooth' });
+    } else if (e.message === 'content_safety') {
+      showToast('生成失败，请检查输入内容是否合适。建议修改后重试。');
+    } else if (e.message === 'no_key') {
+      showToast('请先在设置中配置 API Key');
+      $('settingsPanel').classList.add('open');
+      $('settingsToggle').scrollIntoView({ behavior: 'smooth' });
+    } else {
+      showToast('生成失败，请稍后重试');
+    }
+    return null;
+  }
+}
+
+async function doFineTune(bubbleIndex, tuneAction) {
+  if (state.isGenerating) return;
+  const result = state.results[bubbleIndex];
+  if (!result) return;
+
+  if (getMode() === 'free' && getRemaining() <= 0) {
+    $('upgradeOverlay').classList.add('visible');
+    return;
+  }
+
+  state.isGenerating = true;
+  // Disable tune buttons in that bubble
+  const btns = document.querySelectorAll(`.result-bubble[data-index="${bubbleIndex}"] .tune-btn`);
+  btns.forEach(b => b.disabled = true);
+
+  const messages = [
+    { role: 'system', content: SYSTEM_PROMPT },
+    { role: 'user', content: `身份：${state.identity}\n模式：${state.style}\n对方的原话：${result.input}` },
+    { role: 'assistant', content: result.response },
+    { role: 'user', content: tuneAction === 'harsher' ? '再狠一点' : '委婉一点' },
+  ];
+
+  try {
+    const response = await callDeepSeek(messages);
+    if (response) {
+      result.response = response;
+      result.timestamp = Date.now();
+      if (getMode() === 'free') incrementUsage();
+    }
+  } catch (e) {
+    if (e.message === 'timeout') showToast('生成超时，请检查网络后重试');
+    else if (e.message === 'auth_error') showToast('API Key 无效，请检查设置');
+    else if (e.message === 'content_safety') showToast('内容审核未通过，请修改后重试');
+    else showToast('微调失败，请稍后重试');
+  }
+
+  state.isGenerating = false;
+  renderResults();
+  renderUsage();
+}
+
+// ========== Event Handlers ==========
+// Dark mode
+$('darkToggle').addEventListener('click', () => {
+  state.darkMode = !state.darkMode;
+  document.body.classList.toggle('dark', state.darkMode);
+  $('darkToggle').textContent = state.darkMode ? '🌙' : '☀️';
+  lsSet('dark_mode', state.darkMode);
+});
+
+// Identity
+$('identityRow').addEventListener('click', (e) => {
+  const tag = e.target.closest('.identity-tag');
+  if (!tag) return;
+  state.identity = tag.dataset.identity;
+  lsSet('identity', state.identity);
+  renderIdentities();
+});
+
+// Style
+$('styleGrid').addEventListener('click', (e) => {
+  const card = e.target.closest('.style-card');
+  if (!card) return;
+  state.style = card.dataset.style;
+  lsSet('style', state.style);
+  renderStyles();
+});
+
+// Scenarios
+$('scenarioRow').addEventListener('click', (e) => {
+  const tag = e.target.closest('.scenario-tag');
+  if (!tag) return;
+  $('userInput').value = tag.dataset.scenario;
+  updateClearButton();
+  updateCharCount();
+  $('userInput').focus();
+});
+
+// Input
+$('userInput').addEventListener('input', () => {
+  updateClearButton();
+  updateCharCount();
+  $('profanityWarning').style.display = 'none';
+});
+$('userInput').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    doGenerate($('userInput').value);
+  }
+});
+$('inputClear').addEventListener('click', () => {
+  $('userInput').value = '';
+  updateClearButton();
+  updateCharCount();
+  $('userInput').focus();
+});
+
+function updateCharCount() {
+  $('charCount').textContent = $('userInput').value.length;
+}
+
+// Generate
+$('generateBtn').addEventListener('click', () => {
+  doGenerate($('userInput').value);
+});
+
+// Results delegation
+$('resultsSection').addEventListener('click', async (e) => {
+  const copyBtn = e.target.closest('.copy-btn');
+  const harsherBtn = e.target.closest('.tune-harsher');
+  const softerBtn = e.target.closest('.tune-softer');
+
+  if (copyBtn) {
+    const idx = parseInt(copyBtn.dataset.index);
+    const text = state.results[idx]?.response || '';
+    try {
+      await navigator.clipboard.writeText(text);
+      copyBtn.textContent = '✅';
+      copyBtn.classList.add('copied');
+      setTimeout(() => { copyBtn.textContent = '📋'; copyBtn.classList.remove('copied'); }, 1500);
+    } catch(e) {
+      showToast('复制失败，请手动复制');
+    }
+  }
+
+  if (harsherBtn) {
+    const idx = parseInt(harsherBtn.dataset.index);
+    await doFineTune(idx, 'harsher');
+  }
+
+  if (softerBtn) {
+    const idx = parseInt(softerBtn.dataset.index);
+    await doFineTune(idx, 'softer');
+  }
+});
+
+// Again + Clear
+$('againBtn').addEventListener('click', () => {
+  doGenerate(state.currentInput);
+});
+$('clearResultsBtn').addEventListener('click', () => {
+  state.results = [];
+  state.currentInput = '';
+  renderResults();
+});
+
+// Upgrade overlay
+$('upgradeGoBtn').addEventListener('click', () => {
+  window.open('https://platform.deepseek.com', '_blank');
+  $('upgradeOverlay').classList.remove('visible');
+});
+$('upgradeDismissBtn').addEventListener('click', () => {
+  $('upgradeOverlay').classList.remove('visible');
+});
+
+// Welcome guide
+$('guideStartBtn').addEventListener('click', () => {
+  $('guideOverlay').classList.remove('visible');
+  lsSet('guide_shown', true);
+});
+
+// Settings toggle
+$('settingsToggle').addEventListener('click', () => {
+  $('settingsPanel').classList.toggle('open');
+});
+
+// Eye toggle
+document.addEventListener('click', (e) => {
+  const eye = e.target.closest('.eye-toggle');
+  if (!eye) return;
+  const targetId = eye.dataset.target;
+  const input = document.getElementById(targetId);
+  if (!input) return;
+  const isPassword = input.type === 'password';
+  input.type = isPassword ? 'text' : 'password';
+  eye.textContent = isPassword ? '🙈' : '👁️';
+});
+
+// API Key inputs - auto switch mode
+['publicKeyInput', 'userKeyInput'].forEach(id => {
+  $(id).addEventListener('input', () => {
+    const pk = getPublicKey();
+    const uk = getUserKey();
+    lsSet('public_key', pk);
+    lsSet('user_key', uk);
+    renderUsage();
+  });
+});
+
+// Test connection
+$('testBtn').addEventListener('click', async () => {
+  const key = getActiveKey();
+  if (!key) {
+    $('testResult').textContent = '请先填入 API Key';
+    $('testResult').className = 'test-result fail';
+    return;
+  }
+  $('testResult').textContent = '测试中...';
+  $('testResult').className = 'test-result';
+  try {
+    const resp = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` },
+      body: JSON.stringify({ model: 'deepseek-chat', messages: [{ role: 'user', content: 'Hi' }], max_tokens: 1 }),
+    });
+    if (resp.ok) {
+      $('testResult').textContent = '连接成功 ✅';
+      $('testResult').className = 'test-result success';
+    } else {
+      const err = await resp.json().catch(() => ({}));
+      if (resp.status === 401 || (err.error?.message || '').includes('auth')) {
+        $('testResult').textContent = '连接失败，请检查Key';
+      } else {
+        $('testResult').textContent = '连接失败，请检查Key';
+      }
+      $('testResult').className = 'test-result fail';
+    }
+  } catch(e) {
+    $('testResult').textContent = '连接失败，请检查网络';
+    $('testResult').className = 'test-result fail';
+  }
+});
+
+// Mode status delegation
+$('modeStatus').addEventListener('click', (e) => {
+  if (e.target.id === 'switchToFree') {
+    $('userKeyInput').value = '';
+    lsSet('user_key', '');
+    renderUsage();
+    showToast('已切换回免费模式');
+  }
+});
+
+// ========== Init ==========
+function init() {
+  // Restore state
+  state.identity = lsGet('identity', '通用');
+  state.style = lsGet('style', '优雅反击');
+  state.darkMode = lsGet('dark_mode', false);
+
+  // Apply dark mode
+  if (state.darkMode) {
+    document.body.classList.add('dark');
+    $('darkToggle').textContent = '🌙';
+  }
+
+  // Restore keys
+  const pk = lsGet('public_key', '');
+  const uk = lsGet('user_key', '');
+  $('publicKeyInput').value = pk;
+  $('userKeyInput').value = uk;
+
+  // Render UI
+  renderIdentities();
+  renderStyles();
+  renderScenarios();
+  renderUsage();
+  updateClearButton();
+
+  // Welcome guide
+  const guideShown = lsGet('guide_shown', false);
+  if (!guideShown) {
+    $('guideOverlay').classList.add('visible');
+  }
+
+  // Auto focus input
+  setTimeout(() => $('userInput').focus(), 300);
+
+  // Check daily reset
+  const usage = getDailyUsage();
+  lsSet('daily_usage', usage);
+  renderUsage();
+}
+
+init();
+</script>
+
+</body>
+</html>
