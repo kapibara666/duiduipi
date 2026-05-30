@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>怼怼皮 - 你的AI嘴替助手</title>
-<meta name="description" content="被人用话噎住不知道怎么回？怼怼皮帮你一键生成高情商回怼，8种身份6种风格，再也不吃哑巴亏。">
+<meta name="description" content="被人用话噎住不知道怎么回？怼怼皮帮你一键生成高情商回怼，双维度身份6种风格，再也不吃哑巴亏。">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap');
 
@@ -22,6 +22,7 @@
   --danger: #e74c3c;
   --success: #27ae60;
   --warning: #f0a040;
+  --star: #f59e0b;
   --radius: 16px;
   --radius-sm: 10px;
   --radius-xs: 8px;
@@ -79,6 +80,7 @@ body {
   max-height: calc(100vh - 40px);
   overflow-y: auto;
 }
+
 /* Header */
 .header {
   display: flex;
@@ -116,38 +118,63 @@ body {
 .dark-toggle:hover { border-color: var(--primary); }
 
 /* Sections */
-.section { margin-top: 20px; }
+.section { margin-top: 16px; }
 .section-label {
   font-size: 13px;
   font-weight: 600;
   color: var(--text-secondary);
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   letter-spacing: 0.5px;
 }
 
-/* Identity tags */
-.identity-row {
-  display: flex; flex-wrap: wrap; gap: 8px;
+/* Target tags */
+.target-row {
+  display: flex; flex-wrap: wrap; gap: 6px;
 }
-.identity-tag {
-  padding: 8px 14px;
+.target-tag {
+  padding: 6px 10px;
   border-radius: 20px;
   border: 1.5px solid var(--border);
   background: var(--card-bg);
-  font-size: 14px;
+  font-size: 13px;
   color: var(--text);
   cursor: pointer;
   transition: all 0.2s;
   user-select: none;
   white-space: nowrap;
 }
-.identity-tag:hover { border-color: var(--primary); }
-.identity-tag.selected {
+.target-tag:hover { border-color: var(--primary); }
+.target-tag.selected {
   background: var(--primary-soft);
   border-color: var(--primary);
   color: var(--primary);
   font-weight: 600;
 }
+
+/* Vibe cards */
+.vibe-row {
+  display: flex; gap: 6px;
+}
+.vibe-card {
+  flex:1;
+  padding: 10px 6px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+  background: var(--card-bg);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+  user-select: none;
+}
+.vibe-card:hover { border-color: var(--primary); }
+.vibe-card.selected {
+  border-color: var(--primary);
+  background: var(--primary-light);
+}
+.vibe-card .vibe-emoji { font-size: 22px; }
+.vibe-card .vibe-name { font-size: 13px; font-weight: 600; color: var(--text); margin-top: 2px; }
+.vibe-card.selected .vibe-name { color: var(--primary); }
+.vibe-card .vibe-desc { font-size: 10px; color: var(--text-hint); margin-top: 1px; }
 
 /* Style cards */
 .style-grid {
@@ -204,6 +231,47 @@ body {
   color: var(--primary);
   background: var(--primary-light);
 }
+
+/* Scene guide */
+.scene-guide-btn {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 6px 12px;
+  border-radius: 14px;
+  border: 1px dashed var(--border);
+  background: transparent;
+  font-size: 12px;
+  color: var(--text-hint);
+  cursor: pointer;
+  transition: all 0.15s;
+  margin-top: 4px;
+}
+.scene-guide-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: var(--primary-light);
+}
+.scene-guide-panel {
+  display: none;
+  margin-top: 8px;
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+}
+.scene-guide-panel.open { display: block; }
+.scene-guide-item {
+  display: block; width: 100%;
+  padding: 8px 12px;
+  border: none;
+  background: transparent;
+  font-size: 13px;
+  color: var(--text);
+  cursor: pointer;
+  text-align: left;
+  border-radius: 6px;
+  transition: all 0.1s;
+}
+.scene-guide-item:hover { background: var(--primary-light); color: var(--primary); }
 
 /* Input area */
 .input-card {
@@ -272,6 +340,15 @@ body {
 }
 .usage-text.expert { color: var(--primary); }
 
+/* Stats */
+.stats-bar {
+  text-align: center;
+  margin-top: 4px;
+  font-size: 10px;
+  color: var(--text-hint);
+  opacity: 0.7;
+}
+
 /* Generate button */
 .generate-btn {
   width: 100%;
@@ -298,7 +375,7 @@ body {
 }
 
 /* Results */
-.results-section { margin-top: 20px; }
+.results-section { margin-top: 0; }
 .result-bubble {
   background: var(--bubble-bg);
   border-radius: 18px 18px 18px 4px;
@@ -317,23 +394,25 @@ body {
   padding-right: 28px;
   word-break: break-word;
 }
-.result-bubble .copy-btn {
+.result-bubble .copy-btn, .result-bubble .star-btn {
   position: absolute;
-  top: 12px; right: 12px;
   width: 28px; height: 28px;
   border-radius: 50%;
   border: none;
   background: transparent;
-  color: var(--text-secondary);
   font-size: 14px;
   cursor: pointer;
   transition: all 0.15s;
   display: flex; align-items: center; justify-content: center;
 }
+.result-bubble .copy-btn { top: 12px; right: 12px; color: var(--text-secondary); }
+.result-bubble .star-btn { top: 12px; right: 42px; color: var(--text-hint); }
 .result-bubble .copy-btn:hover { color: var(--primary); background: rgba(124,92,231,0.1); }
 .result-bubble .copy-btn.copied { color: var(--success); }
+.result-bubble .star-btn:hover { color: var(--star); background: rgba(245,158,11,0.1); }
+.result-bubble .star-btn.starred { color: var(--star); }
 .result-bubble .tune-btns {
-  display: flex; gap: 8px;
+  display: flex; gap: 6px; flex-wrap: wrap;
   margin-top: 10px;
   padding-top: 8px;
   border-top: 1px solid rgba(0,0,0,0.06);
@@ -357,6 +436,43 @@ body {
   cursor: not-allowed;
 }
 
+/* Technique tag */
+.technique-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: 600;
+  margin-top: 6px;
+  background: #e0f2fe;
+  color: #0369a1;
+}
+body.dark .technique-tag {
+  background: #0c2d48;
+  color: #7dd3fc;
+}
+
+/* Counter predict */
+.counter-section {
+  margin-top: 8px;
+  padding: 8px 10px;
+  border-radius: var(--radius-xs);
+  background: rgba(240,160,64,0.08);
+  border-left: 3px solid var(--warning);
+  font-size: 12px;
+  color: var(--text-secondary);
+  display: none;
+}
+.counter-section.visible { display: block; }
+.counter-section .counter-label {
+  font-weight: 600;
+  font-size: 10px;
+  color: var(--warning);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
 /* Newest result highlight */
 .result-bubble.newest {
   background: linear-gradient(135deg, #fff9e6 0%, #fff3d0 100%);
@@ -369,7 +485,7 @@ body.dark .result-bubble.newest {
   box-shadow: 0 0 0 4px rgba(212,146,42,0.15);
 }
 
-/* Identity/style badge */
+/* Identity/vibe/style badge */
 .result-badge {
   display: inline-flex; gap: 4px;
   margin-bottom: 8px;
@@ -382,9 +498,17 @@ body.dark .result-bubble.newest {
   font-weight: 600;
   letter-spacing: 0.3px;
 }
-.badge-identity {
+.badge-target {
   background: var(--primary-soft);
   color: var(--primary);
+}
+.badge-vibe {
+  background: #f0fdf4;
+  color: #166534;
+}
+body.dark .badge-vibe {
+  background: #0a2a18;
+  color: #4ade80;
 }
 .badge-style {
   background: #fef3c7;
@@ -393,6 +517,26 @@ body.dark .result-bubble.newest {
 body.dark .badge-style {
   background: #3d2e0a;
   color: #fbbf24;
+}
+
+/* Favorites toggle */
+.favorites-toggle {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  font-size: 12px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s;
+  margin-bottom: 8px;
+}
+.favorites-toggle:hover { border-color: var(--star); color: var(--star); }
+.favorites-toggle.active {
+  border-color: var(--star);
+  background: #fef3c7;
+  color: var(--star);
 }
 
 /* Again + Clear buttons */
@@ -577,8 +721,6 @@ body.dark .badge-style {
   display: flex; gap: 6px;
   position: relative;
 }
-
-/* HACK: the eye-toggle's absolute positioning relies on this */
 .input-group input {
   flex: 1;
   padding: 10px 40px 10px 12px;
@@ -676,7 +818,7 @@ body.dark .toast { background: #555; }
 }
 @media (max-width: 360px) {
   .style-grid { grid-template-columns: repeat(2, 1fr); }
-  .identity-tag { padding: 6px 10px; font-size: 13px; }
+  .target-tag { padding: 5px 8px; font-size: 12px; }
 }
 </style>
 </head>
@@ -693,23 +835,33 @@ body.dark .toast { background: #555; }
     <button class="dark-toggle" id="darkToggle" title="切换暗黑模式">☀️</button>
   </header>
 
-  <!-- Identity -->
+  <!-- 对方是谁 -->
   <section class="section">
-    <div class="section-label">选择身份</div>
-    <div class="identity-row" id="identityRow"></div>
+    <div class="section-label">🎯 对方是谁</div>
+    <div class="target-row" id="targetRow"></div>
   </section>
 
-  <!-- Style -->
+  <!-- 你的气场 -->
   <section class="section">
-    <div class="section-label">选择风格</div>
+    <div class="section-label">💪 你的气场</div>
+    <div class="vibe-row" id="vibeRow"></div>
+  </section>
+
+  <!-- 选择风格 -->
+  <section class="section">
+    <div class="section-label">🗡️ 选择风格</div>
     <div class="style-grid" id="styleGrid"></div>
   </section>
 
-  <!-- Scenarios -->
+  <!-- 高频场景 -->
   <section class="section">
-    <div class="section-label">高频场景</div>
+    <div class="section-label">📋 高频场景</div>
     <div class="scenario-row" id="scenarioRow"></div>
   </section>
+
+  <!-- 场景引导 -->
+  <button class="scene-guide-btn" id="sceneGuideBtn">💡 不知道怎么描述？点这里快速选场景</button>
+  <div class="scene-guide-panel" id="sceneGuidePanel"></div>
 
   <!-- Input -->
   <section class="section">
@@ -723,12 +875,15 @@ body.dark .toast { background: #555; }
 
   <!-- Usage bar -->
   <div class="usage-bar"><span class="usage-text" id="usageText"></span></div>
+  <!-- Stats -->
+  <div class="stats-bar" id="statsBar"></div>
 
   <!-- Generate -->
   <button class="generate-btn" id="generateBtn">生成回怼</button>
 </div><div class="right-panel">
 
   <!-- Results -->
+  <button class="favorites-toggle" id="favoritesToggle" style="display:none">⭐ 只看收藏</button>
   <section class="results-section" id="resultsSection"></section>
   <div class="result-actions" id="resultActions" style="display:none">
     <button class="again-btn" id="againBtn">🔄 再来一条</button>
@@ -760,9 +915,10 @@ body.dark .toast { background: #555; }
       <h2>欢迎使用怼怼皮</h2>
       <p class="guide-subtitle">你身边最会说话的朋友，有点皮，但句句在理</p>
       <div class="guide-steps">
-        1️⃣ 选身份<br>
-        2️⃣ 选风格<br>
-        3️⃣ 输入那句话
+        1️⃣ 选对方身份<br>
+        2️⃣ 选气场<br>
+        3️⃣ 选风格<br>
+        4️⃣ 输入那句话
       </div>
       <button class="guide-start-btn" id="guideStartBtn">开始吧，帮我出招</button>
     </div>
@@ -793,20 +949,24 @@ body.dark .toast { background: #555; }
 </div>
 
 <!-- Toast -->
-<div class="toast" id="toast"></div>
-
-<script>
+<div class="toast" id="toast"></div><script>
 // ========== Constants ==========
-const SYSTEM_PROMPT = `你是一个专业的沟通教练。用户正在面临一个社交冲突。请你根据用户选择的【身份】和【模式】，生成一句精准的回怼文案。
-身份设定如下：
-- 小学生：天真、直接、爱提规则和老师。
-- 中学生：带点小幽默和网络梗，有个性。
-- 大学生：带点讽刺和清醒，善用校园梗，表面客气实则疏远。
-- 职场新人：礼貌、小心，但知道用流程保护自己。
-- 职场老手：绵里藏针，用逻辑、数据和公司大局观反击。
-- 亲密关系：重在表达感受，用'我感觉到...'句式，不激化矛盾。
-- 家庭亲戚：幽默自嘲、打太极，不正面冲突，也不吃亏。
-- 通用：高情商、得体、不卑不亢。
+const SYSTEM_PROMPT = `你是一个专业的沟通教练。用户正在面临一个社交冲突。请根据用户选择的【对方是谁】【气场】【模式】，生成一句精准的回怼文案。
+
+对方是谁（决定权力距离和社交策略）：
+- 领导：表面服从，绵里藏针，用请示汇报的语气包装反击。不正面刚，但让对方感受到你有底线。
+- 同事：公事公办，用流程和职责保护自己。不撕破脸但也不吃亏。
+- 同学：幽默玩梗，可以更直接更损，像朋友互怼一样轻松。
+- 伴侣：重在表达感受，撒娇式回怼，用"我感觉到..."句式，不激化矛盾。
+- 亲戚：幽默自嘲、太极推手，不正面冲突，笑着把话题带过去。
+- 客户：专业客气，用数据和质量说话，底线清晰但不失礼貌。
+- 陌生人：随心所欲，看心情怼，不用顾忌太多。
+- 通用：高情商得体，根据语境自动适配。
+
+你的气场（决定语气强度）：
+- 软萌：温柔可爱，像学生/新人的语气，天真直接但有机灵。即使怼人也带着萌感，不让人觉得冒犯。
+- 平衡：得体大方，不卑不亢，像普通人正常交流的语气。
+- 硬气：气场全开，像职场老手/过来人，自信从容，必要时可以锋芒毕露。
 
 模式设定如下：
 - 直接开怼：毫不留情，正面硬刚。直指对方逻辑漏洞或双标行为，语气锋利如刀，一句封喉，让对方瞬间闭嘴。不带脏话但刀刀见血。
@@ -830,7 +990,33 @@ const SYSTEM_PROMPT = `你是一个专业的沟通教练。用户正在面临一
 
 请严格遵循以上设定。记住：你说的每句话都要像真人微信聊天一样自然、接地气、生活化，不要AI腔、不要书面语。即使是完全相同的输入，也请尽量给出不同措辞的回复。不要用emoji（方便粘贴到微信）。只输出一句回怼文案，不要任何解释，不要带前缀，不要带引号包裹，句子不要太长——像平时发消息那样短小精悍。`;
 
-const IDENTITIES = ['通用','小学生','中学生','大学生','职场新人','职场老手','亲密关系','家庭亲戚'];
+const COUNTER_PROMPT = `你是一个社交场景模拟器。刚才发生了一段对话：
+对方说："{userInput}"
+你回复："{userReply}"
+
+请设身处地站在对方的角度，推测对方最可能会怎么回应。对方可能会：
+- 如果被你说中了痛点，可能会恼羞成怒或转移话题
+- 如果被你噎住了，可能会沉默或尴尬地换个话题
+- 如果被你幽默化解，可能会顺着台阶下
+- 如果被你的真诚打动，可能会软化态度
+
+只输出一句对方可能的回应，要生活化口语化，像真人微信聊天。不要任何解释和前缀。`;
+
+const TARGETS = [
+  { emoji:'🏢', name:'领导' },
+  { emoji:'💼', name:'同事' },
+  { emoji:'🎓', name:'同学' },
+  { emoji:'❤️', name:'伴侣' },
+  { emoji:'👨‍👩‍👧', name:'亲戚' },
+  { emoji:'🎯', name:'客户' },
+  { emoji:'🌐', name:'陌生人' },
+  { emoji:'🔧', name:'通用' },
+];
+const VIBES = [
+  { emoji:'🐣', name:'软萌', desc:'学生/温和/可爱' },
+  { emoji:'⚖️', name:'平衡', desc:'得体/不卑不亢' },
+  { emoji:'💪', name:'硬气', desc:'老手/气场全开' },
+];
 const STYLES = [
   { name:'直接开怼', desc:'毫不留情，正面硬刚' },
   { name:'幽默化解', desc:'笑里藏刀，高级讽刺' },
@@ -840,9 +1026,37 @@ const STYLES = [
   { name:'真诚必杀技', desc:'灵魂暴击，不战而胜' },
   { name:'嘴替模式', desc:'句句诛心，彻底破防' },
 ];
+const TECHNIQUE_MAP = {
+  '直接开怼': { name:'正面硬刚', desc:'直指逻辑漏洞，一句封喉' },
+  '幽默化解': { name:'借力打力', desc:'用对方的梗反杀，笑着暴击' },
+  '优雅反击': { name:'降维打击', desc:'站在更高维度，让对方无话可说' },
+  '阴阳怪气': { name:'笑里藏刀', desc:'最温柔的语气，最致命的暴击' },
+  '把天聊死': { name:'终极终结', desc:'一击终结话题，让对方大脑宕机' },
+  '真诚必杀技': { name:'以柔克刚', desc:'用真诚的力量直击灵魂' },
+  '嘴替模式': { name:'直击要害', desc:'撕开伪装，一针见血' },
+};
 const SCENARIOS = [
   '你怎么连这个都不会？','你胖了/瘦了。','什么时候结婚？',
   '你这方案不行，重做。','你是不是太敏感了？','我都是为你好。',
+];
+// Scene guide: categorized presets with suggested target
+const SCENE_GUIDES = [
+  { cat:'职场', items:[
+    { text:'同事说我方案不行', fill:'你这方案不行，重做。', target:'同事' },
+    { text:'领导让我背锅', fill:'这个责任不在我吧？你查清楚再说。', target:'领导' },
+    { text:'开会被当众diss', fill:'你这话什么意思？有意见可以直接私下聊。', target:'同事' },
+    { text:'客户无理要求', fill:'这个需求我们评估过，目前技术和排期都不支持。', target:'客户' },
+  ]},
+  { cat:'家庭', items:[
+    { text:'亲戚催婚', fill:'什么时候结婚？', target:'亲戚' },
+    { text:'爸妈说为我好', fill:'我都是为你好。', target:'亲戚' },
+    { text:'伴侣冷暴力', fill:'你又怎么了？我哪里惹到你了？', target:'伴侣' },
+  ]},
+  { cat:'社交', items:[
+    { text:'被人说太敏感', fill:'你是不是太敏感了？', target:'同学' },
+    { text:'被人说胖/瘦', fill:'你最近好像胖了。', target:'陌生人' },
+    { text:'被人说不会做事', fill:'你怎么连这个都不会？', target:'同事' },
+  ]},
 ];
 const PROFANITY_LIST = ['fuck','shit','操你','傻逼','煞笔','妈逼','你妈逼','鸡巴','王八蛋','龟儿子','狗日的','婊子','贱人','去死吧','草泥马','日你','操蛋','肏','屌丝','妈蛋','狗屁','混蛋'];
 const FREE_LIMIT = 20;
@@ -851,13 +1065,16 @@ const TIMEOUT_MS = 15000;
 
 // ========== State ==========
 let state = {
-  identity: '通用',
+  target: '通用',
+  vibe: '平衡',
   style: '优雅反击',
-  mode: 'free', // 'free' | 'expert'
+  mode: 'free',
   results: [],
   currentInput: '',
   isGenerating: false,
   darkMode: false,
+  favorites: [],
+  showFavorites: false,
 };
 
 // ========== Helpers ==========
@@ -870,24 +1087,16 @@ function lsSet(key, value) {
   try { localStorage.setItem('ddp_' + key, JSON.stringify(value)); } catch(e) {}
 }
 
-function getPublicKey() {
-  return ($('publicKeyInput').value || '').trim();
-}
-function getUserKey() {
-  return ($('userKeyInput').value || '').trim();
-}
+function getPublicKey() { return ($('publicKeyInput').value || '').trim(); }
+function getUserKey() { return ($('userKeyInput').value || '').trim(); }
 function getActiveKey() {
   const uk = getUserKey();
   if (uk) return uk;
   return getPublicKey();
 }
-function getMode() {
-  return getUserKey() ? 'expert' : 'free';
-}
+function getMode() { return getUserKey() ? 'expert' : 'free'; }
 
-function getToday() {
-  return new Date().toISOString().slice(0, 10);
-}
+function getToday() { return new Date().toISOString().slice(0, 10); }
 function getDailyUsage() {
   const d = lsGet('daily_usage', { date: '', count: 0 });
   if (d.date !== getToday()) return { date: getToday(), count: 0 };
@@ -898,11 +1107,8 @@ function incrementUsage() {
   d.count++;
   lsSet('daily_usage', d);
 }
-function getRemaining() {
-  return Math.max(0, FREE_LIMIT - getDailyUsage().count);
-}
+function getRemaining() { return Math.max(0, FREE_LIMIT - getDailyUsage().count); }
 
-// Profanity check
 function hasProfanity(text) {
   const lower = text.toLowerCase();
   return PROFANITY_LIST.some(w => lower.includes(w.toLowerCase()));
@@ -918,11 +1124,63 @@ function showToast(msg, duration = 2000) {
   toastTimer = setTimeout(() => t.classList.remove('show'), duration);
 }
 
+// ========== Stats ==========
+function logUsage() {
+  const stats = lsGet('stats', { combos:{}, scenes:{}, total:0 });
+  stats.total++;
+  const comboKey = `${state.target}|${state.vibe}|${state.style}`;
+  stats.combos[comboKey] = (stats.combos[comboKey] || 0) + 1;
+  if (state.currentInput) {
+    // Track which scenario text was used
+    const matched = SCENARIOS.find(s => s === state.currentInput);
+    if (matched) {
+      stats.scenes[matched] = (stats.scenes[matched] || 0) + 1;
+    }
+  }
+  lsSet('stats', stats);
+  renderStats();
+}
+function renderStats() {
+  const el = $('statsBar');
+  const stats = lsGet('stats', { combos:{}, scenes:{}, total:0 });
+  if (stats.total < 3) { el.textContent = ''; return; }
+  // Show top 3 combos
+  const sorted = Object.entries(stats.combos).sort((a,b) => b[1] - a[1]).slice(0, 3);
+  const parts = sorted.map(([key, count]) => {
+    const [target, vibe, style] = key.split('|');
+    return `${target}·${vibe}·${style} ${count}次`;
+  });
+  el.textContent = '🔥 热门: ' + parts.join(' · ');
+}
+
+// ========== Favorites ==========
+function toggleFavorite(id) {
+  const idx = state.favorites.indexOf(id);
+  if (idx >= 0) {
+    state.favorites.splice(idx, 1);
+  } else {
+    state.favorites.unshift(id);
+  }
+  lsSet('favorites', state.favorites);
+  renderResults();
+}
+function isFavorite(id) { return state.favorites.includes(id); }
+
 // ========== UI Rendering ==========
-function renderIdentities() {
-  const row = $('identityRow');
-  row.innerHTML = IDENTITIES.map(id =>
-    `<span class="identity-tag${id === state.identity ? ' selected' : ''}" data-identity="${id}">${id}</span>`
+function renderTargets() {
+  const row = $('targetRow');
+  row.innerHTML = TARGETS.map(t =>
+    `<span class="target-tag${t.name === state.target ? ' selected' : ''}" data-target="${t.name}">${t.emoji} ${t.name}</span>`
+  ).join('');
+}
+function renderVibes() {
+  const row = $('vibeRow');
+  row.innerHTML = VIBES.map(v =>
+    `<div class="vibe-card${v.name === state.vibe ? ' selected' : ''}" data-vibe="${v.name}">
+      <div class="vibe-emoji">${v.emoji}</div>
+      <div class="vibe-name">${v.name}</div>
+      <div class="vibe-desc">${v.desc}</div>
+    </div>`
   ).join('');
 }
 function renderStyles() {
@@ -939,6 +1197,14 @@ function renderScenarios() {
     `<span class="scenario-tag" data-scenario="${s.replace(/"/g,'&quot;')}">${s}</span>`
   ).join('');
 }
+function renderSceneGuide() {
+  $('sceneGuidePanel').innerHTML = SCENE_GUIDES.map(cat =>
+    `<div style="font-size:11px;font-weight:600;color:var(--text-hint);margin:6px 0 2px;padding-left:4px;">${cat.cat}</div>` +
+    cat.items.map(item =>
+      `<button class="scene-guide-item" data-fill="${item.fill.replace(/"/g,'&quot;')}" data-target="${item.target}">${item.text}</button>`
+    ).join('')
+  ).join('');
+}
 function renderUsage() {
   const el = $('usageText');
   const mode = getMode();
@@ -949,7 +1215,6 @@ function renderUsage() {
     el.className = 'usage-text';
     el.textContent = `今日免费剩余：${getRemaining()}/${FREE_LIMIT}`;
   }
-  // update mode status in settings
   renderModeStatus();
 }
 function renderModeStatus() {
@@ -965,25 +1230,51 @@ function renderModeStatus() {
 function renderResults() {
   const section = $('resultsSection');
   const actions = $('resultActions');
-  if (state.results.length === 0) {
-    section.innerHTML = '';
+  const favToggle = $('favoritesToggle');
+
+  // Filter results
+  let results = state.results;
+  if (state.showFavorites) {
+    results = results.filter(r => isFavorite(r.id));
+  }
+
+  if (results.length === 0) {
+    section.innerHTML = state.showFavorites ? '<div style="text-align:center;color:var(--text-hint);padding:20px;">⭐ 还没有收藏任何句子</div>' : '';
     actions.style.display = 'none';
+    favToggle.style.display = state.results.length > 0 ? '' : 'none';
     return;
   }
-  section.innerHTML = state.results.map((r, i) => `
-    <div class="result-bubble${i === 0 ? ' newest' : ''}" data-index="${i}">
-      <button class="copy-btn" data-index="${i}" title="复制">📋</button>
+
+  favToggle.style.display = state.results.length > 0 ? '' : 'none';
+  favToggle.textContent = state.showFavorites ? '⭐ 显示全部' : '⭐ 只看收藏';
+  favToggle.className = 'favorites-toggle' + (state.showFavorites ? ' active' : '');
+
+  section.innerHTML = results.map((r, i) => {
+    const isNew = state.results.indexOf(r) === 0 && !state.showFavorites;
+    const starred = isFavorite(r.id);
+    const technique = TECHNIQUE_MAP[r.style] || { name:'通用', desc:'高情商回怼' };
+    const targetInfo = TARGETS.find(t => t.name === r.target) || { emoji:'🔧', name:'通用' };
+    const vibeInfo = VIBES.find(v => v.name === r.vibe) || { emoji:'⚖️', name:'平衡' };
+    return `
+    <div class="result-bubble${isNew ? ' newest' : ''}" data-index="${state.results.indexOf(r)}">
+      <button class="star-btn${starred ? ' starred' : ''}" data-star="${r.id}" title="收藏">${starred ? '⭐' : '☆'}</button>
+      <button class="copy-btn" data-index="${state.results.indexOf(r)}" title="复制">📋</button>
       <div class="result-badge">
-        <span class="badge-identity">🦸 ${escapeHtml(r.identity || '通用')}</span>
+        <span class="badge-target">${targetInfo.emoji} ${escapeHtml(r.target || '通用')}</span>
+        <span class="badge-vibe">${vibeInfo.emoji} ${escapeHtml(r.vibe || '平衡')}</span>
         <span class="badge-style">💬 ${escapeHtml(r.style || '优雅反击')}</span>
       </div>
       <div class="result-text">${escapeHtml(r.response)}</div>
+      <div class="technique-tag">💡 ${technique.name}：${technique.desc}</div>
+      ${r.counter ? `<div class="counter-section visible"><div class="counter-label">🔮 对方可能会回：</div>${escapeHtml(r.counter)}</div>` : ''}
       <div class="tune-btns">
-        <button class="tune-btn tune-harsher" data-index="${i}">🔥 再狠一点</button>
-        <button class="tune-btn tune-softer" data-index="${i}">❄️ 委婉一点</button>
+        <button class="tune-btn tune-harsher" data-index="${state.results.indexOf(r)}">🔥 再狠一点</button>
+        <button class="tune-btn tune-softer" data-index="${state.results.indexOf(r)}">❄️ 委婉一点</button>
+        <button class="tune-btn tune-counter" data-index="${state.results.indexOf(r)}" ${r.counter ? 'disabled' : ''}>🔮 预判对方回应</button>
       </div>
     </div>
-  `).join('');
+  `}).join('');
+
   actions.style.display = 'flex';
   $('clearResultsBtn').style.display = state.results.length > 2 ? '' : 'none';
 }
@@ -1062,7 +1353,6 @@ async function doGenerate(inputText, tuneAction) {
   }
   $('profanityWarning').style.display = 'none';
 
-  // Check free quota
   if (getMode() === 'free' && getRemaining() <= 0 && !tuneAction) {
     $('upgradeOverlay').classList.add('visible');
     return;
@@ -1073,22 +1363,19 @@ async function doGenerate(inputText, tuneAction) {
   btn.textContent = '生成中...';
   btn.disabled = true;
 
-  // Build messages
   let messages = [];
   if (tuneAction === 'harsher' || tuneAction === 'softer') {
-    // Fine-tuning: include conversation context
-    const lastResult = state.results[state.results.length - 1];
+    const lastResult = state.results[0];
     messages = [
       { role: 'system', content: SYSTEM_PROMPT },
-      { role: 'user', content: `身份：${state.identity}\n模式：${state.style}\n对方的原话：${state.currentInput}` },
+      { role: 'user', content: `对方是谁：${state.target}\n气场：${state.vibe}\n模式：${state.style}\n对方的原话：${state.currentInput}` },
       { role: 'assistant', content: lastResult.response },
       { role: 'user', content: tuneAction === 'harsher' ? '再狠一点' : '委婉一点' },
     ];
   } else {
-    // Fresh generation or "再来一条"
     messages = [
       { role: 'system', content: SYSTEM_PROMPT },
-      { role: 'user', content: `身份：${state.identity}\n模式：${state.style}\n对方的原话：${input}` },
+      { role: 'user', content: `对方是谁：${state.target}\n气场：${state.vibe}\n模式：${state.style}\n对方的原话：${input}` },
     ];
     state.currentInput = input;
   }
@@ -1101,12 +1388,14 @@ async function doGenerate(inputText, tuneAction) {
         input: state.currentInput,
         response: response || '(生成内容为空，请重试)',
         timestamp: Date.now(),
-        identity: state.identity,
+        target: state.target,
+        vibe: state.vibe,
         style: state.style,
+        counter: null,
       });
       if (getMode() === 'free') incrementUsage();
+      logUsage();
     }
-    // Return response for fine-tuning handling
     btn.textContent = '生成回怼';
     btn.disabled = false;
     state.isGenerating = false;
@@ -1121,7 +1410,6 @@ async function doGenerate(inputText, tuneAction) {
       showToast('生成超时，请检查网络后重试');
     } else if (e.message === 'auth_error') {
       showToast('公共免费额度暂时不可用，请开启专家模式使用自己的Key');
-      // Scroll to settings
       $('settingsPanel').classList.add('open');
       $('settingsToggle').scrollIntoView({ behavior: 'smooth' });
     } else if (e.message === 'content_safety') {
@@ -1148,13 +1436,12 @@ async function doFineTune(bubbleIndex, tuneAction) {
   }
 
   state.isGenerating = true;
-  // Disable tune buttons in that bubble
   const btns = document.querySelectorAll(`.result-bubble[data-index="${bubbleIndex}"] .tune-btn`);
   btns.forEach(b => b.disabled = true);
 
   const messages = [
     { role: 'system', content: SYSTEM_PROMPT },
-    { role: 'user', content: `身份：${state.identity}\n模式：${state.style}\n对方的原话：${result.input}` },
+    { role: 'user', content: `对方是谁：${result.target}\n气场：${result.vibe}\n模式：${result.style}\n对方的原话：${result.input}` },
     { role: 'assistant', content: result.response },
     { role: 'user', content: tuneAction === 'harsher' ? '再狠一点' : '委婉一点' },
   ];
@@ -1178,6 +1465,43 @@ async function doFineTune(bubbleIndex, tuneAction) {
   renderUsage();
 }
 
+async function doPredictCounter(bubbleIndex) {
+  if (state.isGenerating) return;
+  const result = state.results[bubbleIndex];
+  if (!result || result.counter) return;
+
+  if (getMode() === 'free' && getRemaining() <= 0) {
+    $('upgradeOverlay').classList.add('visible');
+    return;
+  }
+
+  state.isGenerating = true;
+  const btns = document.querySelectorAll(`.result-bubble[data-index="${bubbleIndex}"] .tune-btn`);
+  btns.forEach(b => b.disabled = true);
+
+  const prompt = COUNTER_PROMPT.replace('{userInput}', result.input).replace('{userReply}', result.response);
+  const messages = [
+    { role: 'system', content: '你是一个社交场景模拟器，推测对话中对方会怎么回应。' },
+    { role: 'user', content: prompt },
+  ];
+
+  try {
+    const response = await callDeepSeek(messages);
+    if (response) {
+      result.counter = response;
+      if (getMode() === 'free') incrementUsage();
+    }
+  } catch (e) {
+    if (e.message === 'timeout') showToast('生成超时，请检查网络后重试');
+    else if (e.message === 'auth_error') showToast('API Key 无效，请检查设置');
+    else showToast('预判失败，请稍后重试');
+  }
+
+  state.isGenerating = false;
+  renderResults();
+  renderUsage();
+}
+
 // ========== Event Handlers ==========
 // Dark mode
 $('darkToggle').addEventListener('click', () => {
@@ -1187,13 +1511,22 @@ $('darkToggle').addEventListener('click', () => {
   lsSet('dark_mode', state.darkMode);
 });
 
-// Identity
-$('identityRow').addEventListener('click', (e) => {
-  const tag = e.target.closest('.identity-tag');
+// Target
+$('targetRow').addEventListener('click', (e) => {
+  const tag = e.target.closest('.target-tag');
   if (!tag) return;
-  state.identity = tag.dataset.identity;
-  lsSet('identity', state.identity);
-  renderIdentities();
+  state.target = tag.dataset.target;
+  lsSet('target', state.target);
+  renderTargets();
+});
+
+// Vibe
+$('vibeRow').addEventListener('click', (e) => {
+  const card = e.target.closest('.vibe-card');
+  if (!card) return;
+  state.vibe = card.dataset.vibe;
+  lsSet('vibe', state.vibe);
+  renderVibes();
 });
 
 // Style
@@ -1213,6 +1546,26 @@ $('scenarioRow').addEventListener('click', (e) => {
   updateClearButton();
   updateCharCount();
   $('userInput').focus();
+});
+
+// Scene guide toggle
+$('sceneGuideBtn').addEventListener('click', () => {
+  $('sceneGuidePanel').classList.toggle('open');
+});
+// Scene guide item click
+$('sceneGuidePanel').addEventListener('click', (e) => {
+  const item = e.target.closest('.scene-guide-item');
+  if (!item) return;
+  $('userInput').value = item.dataset.fill;
+  if (item.dataset.target && item.dataset.target !== '通用') {
+    state.target = item.dataset.target;
+    lsSet('target', state.target);
+    renderTargets();
+  }
+  updateClearButton();
+  updateCharCount();
+  $('userInput').focus();
+  $('sceneGuidePanel').classList.remove('open');
 });
 
 // Input
@@ -1248,6 +1601,8 @@ $('resultsSection').addEventListener('click', async (e) => {
   const copyBtn = e.target.closest('.copy-btn');
   const harsherBtn = e.target.closest('.tune-harsher');
   const softerBtn = e.target.closest('.tune-softer');
+  const counterBtn = e.target.closest('.tune-counter');
+  const starBtn = e.target.closest('.star-btn');
 
   if (copyBtn) {
     const idx = parseInt(copyBtn.dataset.index);
@@ -1262,6 +1617,10 @@ $('resultsSection').addEventListener('click', async (e) => {
     }
   }
 
+  if (starBtn) {
+    toggleFavorite(starBtn.dataset.star);
+  }
+
   if (harsherBtn) {
     const idx = parseInt(harsherBtn.dataset.index);
     await doFineTune(idx, 'harsher');
@@ -1271,6 +1630,17 @@ $('resultsSection').addEventListener('click', async (e) => {
     const idx = parseInt(softerBtn.dataset.index);
     await doFineTune(idx, 'softer');
   }
+
+  if (counterBtn) {
+    const idx = parseInt(counterBtn.dataset.index);
+    await doPredictCounter(idx);
+  }
+});
+
+// Favorites toggle
+$('favoritesToggle').addEventListener('click', () => {
+  state.showFavorites = !state.showFavorites;
+  renderResults();
 });
 
 // Again + Clear
@@ -1280,6 +1650,7 @@ $('againBtn').addEventListener('click', () => {
 $('clearResultsBtn').addEventListener('click', () => {
   state.results = [];
   state.currentInput = '';
+  state.showFavorites = false;
   renderResults();
 });
 
@@ -1372,40 +1743,38 @@ $('modeStatus').addEventListener('click', (e) => {
 
 // ========== Init ==========
 function init() {
-  // Restore state
-  state.identity = lsGet('identity', '通用');
+  state.target = lsGet('target', '通用');
+  state.vibe = lsGet('vibe', '平衡');
   state.style = lsGet('style', '优雅反击');
   state.darkMode = lsGet('dark_mode', false);
+  state.favorites = lsGet('favorites', []);
 
-  // Apply dark mode
   if (state.darkMode) {
     document.body.classList.add('dark');
     $('darkToggle').textContent = '🌙';
   }
 
-  // Restore keys
   const pk = lsGet('public_key', '');
   const uk = lsGet('user_key', '');
   $('publicKeyInput').value = pk;
   $('userKeyInput').value = uk;
 
-  // Render UI
-  renderIdentities();
+  renderTargets();
+  renderVibes();
   renderStyles();
   renderScenarios();
+  renderSceneGuide();
   renderUsage();
+  renderStats();
   updateClearButton();
 
-  // Welcome guide
   const guideShown = lsGet('guide_shown', false);
   if (!guideShown) {
     $('guideOverlay').classList.add('visible');
   }
 
-  // Auto focus input
   setTimeout(() => $('userInput').focus(), 300);
 
-  // Check daily reset
   const usage = getDailyUsage();
   lsSet('daily_usage', usage);
   renderUsage();
