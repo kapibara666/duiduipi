@@ -6,6 +6,8 @@
 <title>怼怼皮 - 你的AI嘴替助手</title>
 <meta name="description" content="被人用话噎住不知道怎么回？怼怼皮帮你一键生成高情商回怼，8种身份6种风格，再也不吃哑巴亏。">
 <style>
+@import url('https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap');
+
 :root {
   --bg: #faf8f5;
   --card-bg: #ffffff;
@@ -54,11 +56,29 @@ body {
 }
 
 .app-container {
-  max-width: 480px;
+  max-width: 960px;
   margin: 0 auto;
   padding: 20px 16px 80px;
 }
 
+/* Two-column layout */
+.main-layout {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+.left-panel {
+  flex: 0 0 420px;
+  min-width: 0;
+}
+.right-panel {
+  flex: 1;
+  min-width: 280px;
+  position: sticky;
+  top: 20px;
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+}
 /* Header */
 .header {
   display: flex;
@@ -68,12 +88,14 @@ body {
 }
 .header-left { flex:1; }
 .logo {
-  font-size: 28px;
-  font-weight: 800;
+  font-family: 'ZCOOL KuaiLe', cursive, sans-serif;
+  font-size: 30px;
+  font-weight: 400;
   background: linear-gradient(135deg, #667eea 0%, #a855f7 50%, #d946ef 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  letter-spacing: 2px;
 }
 .logo-sub {
   font-size: 13px;
@@ -333,6 +355,44 @@ body {
 .result-bubble .tune-btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
+}
+
+/* Newest result highlight */
+.result-bubble.newest {
+  background: linear-gradient(135deg, #fff9e6 0%, #fff3d0 100%);
+  border: 2px solid #f0a040;
+  box-shadow: 0 0 0 4px rgba(240,160,64,0.12);
+}
+body.dark .result-bubble.newest {
+  background: linear-gradient(135deg, #2d2820 0%, #332b1e 100%);
+  border-color: #d4922a;
+  box-shadow: 0 0 0 4px rgba(212,146,42,0.15);
+}
+
+/* Identity/style badge */
+.result-badge {
+  display: inline-flex; gap: 4px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+.result-badge span {
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+.badge-identity {
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+.badge-style {
+  background: #fef3c7;
+  color: #b45309;
+}
+body.dark .badge-style {
+  background: #3d2e0a;
+  color: #fbbf24;
 }
 
 /* Again + Clear buttons */
@@ -595,6 +655,20 @@ body {
 body.dark .toast { background: #555; }
 
 /* Responsive */
+@media (max-width: 767px) {
+  .main-layout {
+    flex-direction: column;
+  }
+  .left-panel {
+    flex: 1 1 auto;
+    width: 100%;
+  }
+  .right-panel {
+    position: static;
+    max-height: none;
+    overflow-y: visible;
+  }
+}
 @media (min-width: 480px) {
   .app-container { padding: 28px 20px 80px; }
   .style-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
@@ -609,10 +683,11 @@ body.dark .toast { background: #555; }
 <body>
 
 <div class="app-container">
+<div class="main-layout"><div class="left-panel">
   <!-- Header -->
   <header class="header">
     <div class="header-left">
-      <div class="logo">怼怼皮 🦸</div>
+      <div class="logo">怼怼皮</div>
       <div class="logo-sub">你身边最会说话的朋友，有点皮，但句句在理</div>
     </div>
     <button class="dark-toggle" id="darkToggle" title="切换暗黑模式">☀️</button>
@@ -651,12 +726,14 @@ body.dark .toast { background: #555; }
 
   <!-- Generate -->
   <button class="generate-btn" id="generateBtn">生成回怼</button>
+</div><div class="right-panel">
 
   <!-- Results -->
   <section class="results-section" id="resultsSection"></section>
   <div class="result-actions" id="resultActions" style="display:none">
     <button class="again-btn" id="againBtn">🔄 再来一条</button>
     <button class="clear-results-btn" id="clearResultsBtn">🗑 清空记录</button>
+</div></div><!-- /main-layout -->
   </div>
 
   <!-- Upgrade overlay -->
@@ -732,33 +809,40 @@ const SYSTEM_PROMPT = `你是一个专业的沟通教练。用户正在面临一
 - 通用：高情商、得体、不卑不亢。
 
 模式设定如下：
-- 直接开怼：简单直接，不留情面，但不带脏话。
-- 幽默化解：用讽刺、自嘲或玩梗的方式化解。
-- 优雅反击：冷静、理性，表明底线，让人无话可说。
-- 阴阳怪气：表面在夸、在认同，实则句句扎心，用最礼貌的语气说最狠的话。
-- 把天聊死：用一个让人无法接话的短句，迅速终止对话，但保持基本礼貌，不要过于冷漠。
-- 真诚必杀技：用最真诚的方式说出自己的真实感受，不攻击对方，但让对方意识到自己的问题。
+- 直接开怼：毫不留情，正面硬刚。直指对方逻辑漏洞或双标行为，语气锋利如刀，一句封喉，让对方瞬间闭嘴。不带脏话但刀刀见血。
+- 幽默化解：用高级讽刺、反向玩梗或黑色幽默让对方自取其辱。笑里藏刀，表面上轻松调侃，实则句句暴击，让对方尴尬到脚趾抠地又无从发作。
+- 优雅反击：冷若冰霜的礼貌绅士。用无可辩驳的逻辑和教科书级措辞划清底线，字字珠玑，句句致命，让对方碰了一鼻子灰还挑不出你一个字的毛病。
+- 阴阳怪气：笑面虎附体。用最温柔的语气、最无辜的表情、最关心的口吻，说出最扎心最致命的话。句句踩在对方最痛的点上，但字面上完美无瑕，对方只能内伤。
+- 把天聊死：终极终结者。用一个让对方直接噎住、大脑宕机的短句瞬间结束对话，杀伤力拉满，让对方愣在原地想三天都想不出怎么回。
+- 真诚必杀技：灵魂暴击。用最真诚最走心的"我感受"句式直击对方良心，不骂不吼不阴阳，但让对方瞬间意识到自己有多过分，愧疚到主动道歉。
+- 嘴替模式：句句诛心，字字见血。用最锋利的语言撕开对方逻辑的伪装，直击要害七寸，让对方彻底破防、哑口无言。保持文明外壳但内核狠到骨子里，让旁观者都倒吸一口凉气。
 
 用户可能正在进行微调：
 - 如果用户要求"再狠一点"，请把上一轮的回怼改得更直接、更犀利，语气加重，但仍不带脏话。
 - 如果用户要求"委婉一点"，请把上一轮的回怼改得更委婉、更温和，保持立场但语气放缓。
 
-请严格遵循以上设定。即使是完全相同的输入，也请尽量给出不同措辞的回复。尽量少用emoji，方便用户粘贴到微信。只输出一句回怼文案，不要任何解释，不要带前缀，不要带引号包裹。`;
+核心语言要求：
+- 必须用生活化的口语，像朋友微信聊天一样自然，不要书面语、不要像AI写的。
+- 短句优先，像真人打字发消息那样，别太长太啰嗦。
+- 要接地气、实用，说出去对方真能被噎住，不是那种"看着文明但现实中没人这么说话"的句子。
+- 可以参考真实社交场景中的怼人金句风格，但要保持原创。
+- 语气要自然流畅，该带语气词就带（啊、吧、呢、呗、哈），该用口语词就用（咋、啥、嘛、呗）。
 
-const IDENTITIES = ['小学生','中学生','大学生','职场新人','职场老手','亲密关系','家庭亲戚','通用'];
+请严格遵循以上设定。记住：你说的每句话都要像真人微信聊天一样自然、接地气、生活化，不要AI腔、不要书面语。即使是完全相同的输入，也请尽量给出不同措辞的回复。不要用emoji（方便粘贴到微信）。只输出一句回怼文案，不要任何解释，不要带前缀，不要带引号包裹，句子不要太长——像平时发消息那样短小精悍。`;
+
+const IDENTITIES = ['通用','小学生','中学生','大学生','职场新人','职场老手','亲密关系','家庭亲戚'];
 const STYLES = [
-  { name:'直接开怼', desc:'不留情面，直接了当' },
-  { name:'幽默化解', desc:'玩梗自嘲，化解尴尬' },
-  { name:'优雅反击', desc:'冷静克制，以理服人' },
-  { name:'阴阳怪气', desc:'表面客气，句句扎心' },
-  { name:'把天聊死', desc:'一句话终结话题' },
-  { name:'真诚必杀技', desc:'说出感受，不伤感情' },
+  { name:'直接开怼', desc:'毫不留情，正面硬刚' },
+  { name:'幽默化解', desc:'笑里藏刀，高级讽刺' },
+  { name:'优雅反击', desc:'冷若冰霜，字字珠玑' },
+  { name:'阴阳怪气', desc:'笑面虎附体，句句扎心' },
+  { name:'把天聊死', desc:'终极终结，一击毙命' },
+  { name:'真诚必杀技', desc:'灵魂暴击，不战而胜' },
+  { name:'嘴替模式', desc:'句句诛心，彻底破防' },
 ];
 const SCENARIOS = [
   '你怎么连这个都不会？','你胖了/瘦了。','什么时候结婚？',
-  '你这方案不行，重做。','大家都是这么过来的。','这有什么好生气的？',
-  '你是不是太敏感了？','你还年轻，以后就懂了。','我都是为你好。',
-  '别人都能做到，怎么就你不行？',
+  '你这方案不行，重做。','你是不是太敏感了？','我都是为你好。',
 ];
 const PROFANITY_LIST = ['fuck','shit','操你','傻逼','煞笔','妈逼','你妈逼','鸡巴','王八蛋','龟儿子','狗日的','婊子','贱人','去死吧','草泥马','日你','操蛋','肏','屌丝','妈蛋','狗屁','混蛋'];
 const FREE_LIMIT = 20;
@@ -887,8 +971,12 @@ function renderResults() {
     return;
   }
   section.innerHTML = state.results.map((r, i) => `
-    <div class="result-bubble" data-index="${i}">
+    <div class="result-bubble${i === 0 ? ' newest' : ''}" data-index="${i}">
       <button class="copy-btn" data-index="${i}" title="复制">📋</button>
+      <div class="result-badge">
+        <span class="badge-identity">🦸 ${escapeHtml(r.identity || '通用')}</span>
+        <span class="badge-style">💬 ${escapeHtml(r.style || '优雅反击')}</span>
+      </div>
       <div class="result-text">${escapeHtml(r.response)}</div>
       <div class="tune-btns">
         <button class="tune-btn tune-harsher" data-index="${i}">🔥 再狠一点</button>
@@ -1008,11 +1096,13 @@ async function doGenerate(inputText, tuneAction) {
   try {
     const response = await callDeepSeek(messages);
     if (!tuneAction) {
-      state.results.push({
+      state.results.unshift({
         id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
         input: state.currentInput,
         response: response || '(生成内容为空，请重试)',
         timestamp: Date.now(),
+        identity: state.identity,
+        style: state.style,
       });
       if (getMode() === 'free') incrementUsage();
     }
