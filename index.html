@@ -2,11 +2,39 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
+<script>
+  (function() {
+    try {
+      var dark = localStorage.getItem('ddp_dark_mode');
+      if (dark !== 'false') document.documentElement.className = 'dark';
+    } catch(e) {}
+  })();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>怼怼皮 - 你的AI嘴替助手</title>
-<meta name="description" content="被人用话噎住不知道怎么回？怼怼皮帮你一键生成高情商回怼，双维度身份6种风格，再也不吃哑巴亏。">
+<meta name="description" content="被人用话噎住不知道怎么回？怼怼皮帮你一键生成高情商回怼，双维度身份多种风格，总有一种适合你。">
+<!-- Open Graph / Social Share -->
+<meta property="og:title" content="怼怼皮 - AI嘴替助手">
+<meta property="og:description" content="不知道怎么回话？怼怼皮帮你一键生成合适回复，再也不吃哑巴亏。">
+<meta property="og:image" content="https://duiduipi.vercel.app/icon-512.png">
+<meta property="og:url" content="https://duiduipi.vercel.app">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<!-- PWA -->
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='g'><stop offset='0%25' stop-color='%23667eea'/><stop offset='100%25' stop-color='%23d946ef'/></linearGradient></defs><circle cx='16' cy='16' r='16' fill='url(%23g)'/><text x='16' y='25' text-anchor='middle' font-size='20'>🦸</text></svg>">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="apple-touch-icon" sizes="512x512" href="/icon-512.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="怼怼皮">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#7c5ce7">
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap');
 
 :root {
   --bg: #faf8f5;
@@ -30,7 +58,7 @@
   --shadow-lg: 0 8px 30px rgba(0,0,0,0.12);
 }
 
-body.dark {
+html.dark {
   --bg: #1a1a2e;
   --card-bg: #252540;
   --text: #e0e0e0;
@@ -59,7 +87,7 @@ body {
 .app-container {
   max-width: 960px;
   margin: 0 auto;
-  padding: 20px 16px 80px;
+  padding: 12px 16px 12px;
 }
 
 /* Two-column layout */
@@ -86,12 +114,12 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 6px;
+  margin-bottom: 2px;
 }
 .header-left { flex:1; }
 .logo {
   font-family: 'ZCOOL KuaiLe', cursive, sans-serif;
-  font-size: 30px;
+  font-size: 24px;
   font-weight: 400;
   background: linear-gradient(135deg, #667eea 0%, #a855f7 50%, #d946ef 100%);
   -webkit-background-clip: text;
@@ -105,7 +133,7 @@ body {
   margin-top: -2px;
 }
 .dark-toggle {
-  width: 40px; height: 40px;
+  width: 32px; height: 32px;
   border-radius: 50%;
   border: 2px solid var(--border);
   background: var(--card-bg);
@@ -118,12 +146,12 @@ body {
 .dark-toggle:hover { border-color: var(--primary); }
 
 /* Sections */
-.section { margin-top: 16px; }
+.section { margin-top: 8px; }
 .section-label {
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 700;
   color: var(--text-secondary);
-  margin-bottom: 8px;
+  margin-bottom: 4px;
   letter-spacing: 0.5px;
 }
 
@@ -132,7 +160,7 @@ body {
   display: flex; flex-wrap: wrap; gap: 6px;
 }
 .target-tag {
-  padding: 6px 10px;
+  padding: 4px 8px;
   border-radius: 20px;
   border: 1.5px solid var(--border);
   background: var(--card-bg);
@@ -151,13 +179,19 @@ body {
   font-weight: 600;
 }
 
+/* Target + Vibe side by side */
+.target-vibe-row {
+  display: flex; gap: 8px;
+}
+.target-vibe-row .section { flex: 1; min-width: 0; margin-top: 0; }
+
 /* Vibe cards */
 .vibe-row {
   display: flex; gap: 6px;
 }
 .vibe-card {
   flex:1;
-  padding: 10px 6px;
+  padding: 6px 4px;
   border-radius: var(--radius-sm);
   border: 1.5px solid var(--border);
   background: var(--card-bg);
@@ -171,19 +205,19 @@ body {
   border-color: var(--primary);
   background: var(--primary-light);
 }
-.vibe-card .vibe-emoji { font-size: 22px; }
-.vibe-card .vibe-name { font-size: 13px; font-weight: 600; color: var(--text); margin-top: 2px; }
+.vibe-card .vibe-emoji { font-size: 18px; }
+.vibe-card .vibe-name { font-size: 13px; font-weight: 600; color: var(--text); margin-top: 1px; }
 .vibe-card.selected .vibe-name { color: var(--primary); }
-.vibe-card .vibe-desc { font-size: 10px; color: var(--text-hint); margin-top: 1px; }
+.vibe-card .vibe-desc { font-size: 11px; color: var(--text-hint); margin-top: 0; }
 
 /* Style cards */
 .style-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
+  gap: 6px;
 }
 .style-card {
-  padding: 12px 8px;
+  padding: 8px 6px;
   border-radius: var(--radius-sm);
   border: 1.5px solid var(--border);
   background: var(--card-bg);
@@ -198,80 +232,17 @@ body {
   background: var(--primary-light);
 }
 .style-card .style-name {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--text);
 }
 .style-card.selected .style-name { color: var(--primary); }
 .style-card .style-desc {
-  font-size: 10px;
+  font-size: 11px;
   color: var(--text-hint);
-  margin-top: 2px;
+  margin-top: 1px;
   line-height: 1.3;
 }
-
-/* Scenario presets */
-.scenario-row {
-  display: flex; flex-wrap: wrap; gap: 6px;
-}
-.scenario-tag {
-  padding: 6px 12px;
-  border-radius: 14px;
-  border: 1px solid var(--border);
-  background: var(--card-bg);
-  font-size: 12px;
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: all 0.15s;
-  user-select: none;
-  white-space: nowrap;
-}
-.scenario-tag:hover {
-  border-color: var(--primary);
-  color: var(--primary);
-  background: var(--primary-light);
-}
-
-/* Scene guide */
-.scene-guide-btn {
-  display: inline-flex; align-items: center; gap: 4px;
-  padding: 6px 12px;
-  border-radius: 14px;
-  border: 1px dashed var(--border);
-  background: transparent;
-  font-size: 12px;
-  color: var(--text-hint);
-  cursor: pointer;
-  transition: all 0.15s;
-  margin-top: 4px;
-}
-.scene-guide-btn:hover {
-  border-color: var(--primary);
-  color: var(--primary);
-  background: var(--primary-light);
-}
-.scene-guide-panel {
-  display: none;
-  margin-top: 8px;
-  padding: 12px;
-  border-radius: var(--radius-sm);
-  background: var(--card-bg);
-  border: 1px solid var(--border);
-}
-.scene-guide-panel.open { display: block; }
-.scene-guide-item {
-  display: block; width: 100%;
-  padding: 8px 12px;
-  border: none;
-  background: transparent;
-  font-size: 13px;
-  color: var(--text);
-  cursor: pointer;
-  text-align: left;
-  border-radius: 6px;
-  transition: all 0.1s;
-}
-.scene-guide-item:hover { background: var(--primary-light); color: var(--primary); }
 
 /* Input area */
 .input-card {
@@ -288,18 +259,18 @@ body {
   border: none;
   outline: none;
   resize: none;
-  font-size: 15px;
-  line-height: 1.6;
-  padding: 12px 36px 12px 12px;
+  font-size: 14px;
+  line-height: 1.5;
+  padding: 8px 36px 8px 12px;
   background: transparent;
   color: var(--text);
   font-family: inherit;
-  min-height: 80px;
+  min-height: 56px;
 }
 .input-card textarea::placeholder { color: var(--text-hint); }
 .input-clear {
   position: absolute;
-  top: 10px; right: 10px;
+  top: 8px; right: 8px;
   width: 28px; height: 28px;
   border-radius: 50%;
   border: none;
@@ -313,11 +284,20 @@ body {
 }
 .input-clear.visible { display: flex; }
 .input-clear:hover { background: #ddd; color: #333; }
+
+/* Scene context input - subtle distinction */
+#sceneContext { min-height: 38px; }
+.scene-card {
+  border-style: dashed;
+  border-color: var(--border);
+}
+.scene-card:focus-within { border-style: solid; border-color: var(--primary); }
+
 .char-count {
   text-align: right;
   font-size: 11px;
   color: var(--text-hint);
-  padding: 4px 12px 8px;
+  padding: 2px 12px 4px;
 }
 
 /* Profanity warning */
@@ -332,7 +312,7 @@ body {
 /* Usage bar */
 .usage-bar {
   text-align: center;
-  margin-top: 8px;
+  margin-top: 4px;
 }
 .usage-text {
   font-size: 11px;
@@ -343,25 +323,46 @@ body {
 /* Stats */
 .stats-bar {
   text-align: center;
-  margin-top: 4px;
+  margin-top: 2px;
   font-size: 10px;
   color: var(--text-hint);
   opacity: 0.7;
 }
 
+/* Sticky action bar */
+.action-bar {
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+  background: var(--bg);
+  padding: 8px 0 4px;
+  margin-top: 8px;
+}
+.action-bar .generate-btn {
+  margin-top: 0;
+}
+.action-bar .generate-all-btn {
+  margin-top: 4px;
+  padding: 8px;
+  font-size: 13px;
+}
+.action-bar .progress-text {
+  margin-top: 2px;
+}
+
 /* Generate button */
 .generate-btn {
   width: 100%;
-  padding: 14px;
+  padding: 10px;
   border-radius: var(--radius);
   border: none;
   background: linear-gradient(135deg, #667eea, #a855f7);
   color: #fff;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s;
-  margin-top: 12px;
+  margin-top: 0;
   letter-spacing: 1px;
 }
 .generate-btn:hover:not(:disabled) {
@@ -447,7 +448,7 @@ body {
   background: #e0f2fe;
   color: #0369a1;
 }
-body.dark .technique-tag {
+html.dark .technique-tag {
   background: #0c2d48;
   color: #7dd3fc;
 }
@@ -479,7 +480,7 @@ body.dark .technique-tag {
   border: 2px solid #f0a040;
   box-shadow: 0 0 0 4px rgba(240,160,64,0.12);
 }
-body.dark .result-bubble.newest {
+html.dark .result-bubble.newest {
   background: linear-gradient(135deg, #2d2820 0%, #332b1e 100%);
   border-color: #d4922a;
   box-shadow: 0 0 0 4px rgba(212,146,42,0.15);
@@ -506,7 +507,7 @@ body.dark .result-bubble.newest {
   background: #f0fdf4;
   color: #166534;
 }
-body.dark .badge-vibe {
+html.dark .badge-vibe {
   background: #0a2a18;
   color: #4ade80;
 }
@@ -514,7 +515,7 @@ body.dark .badge-vibe {
   background: #fef3c7;
   color: #b45309;
 }
-body.dark .badge-style {
+html.dark .badge-style {
   background: #3d2e0a;
   color: #fbbf24;
 }
@@ -794,7 +795,240 @@ body.dark .badge-style {
   pointer-events: none;
 }
 .toast.show { opacity:1; }
-body.dark .toast { background: #555; }
+html.dark .toast { background: #555; }
+
+/* Custom input (target / style) */
+.custom-input {
+  display: none;
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: var(--radius-xs);
+  border: 1.5px solid var(--border);
+  background: var(--card-bg);
+  color: var(--text);
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s;
+  margin-top: 8px;
+}
+.custom-input.visible { display: block; }
+.custom-input:focus { border-color: var(--primary); }
+.custom-input::placeholder { color: var(--text-hint); font-size: 12px; }
+
+/* Like / Dislike buttons */
+.result-bubble .feedback-btns {
+  display: flex; gap: 2px;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(0,0,0,0.06);
+}
+.result-bubble .fb-btn {
+  padding: 3px 8px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: transparent;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s;
+  color: var(--text-hint);
+}
+.result-bubble .fb-btn:hover { background: rgba(0,0,0,0.05); }
+.result-bubble .fb-btn.liked { color: var(--success); }
+.result-bubble .fb-btn.disliked { color: var(--danger); }
+
+/* Copy all bar */
+.copy-all-bar {
+  display: flex; justify-content: center;
+  margin-top: 8px;
+}
+.copy-all-btn {
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+  background: var(--card-bg);
+  font-size: 13px;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.15s;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.copy-all-btn:hover { border-color: var(--primary); color: var(--primary); }
+.copy-all-btn.copied { color: var(--success); border-color: var(--success); }
+
+/* Generate all button */
+.generate-all-btn {
+  width: 100%;
+  padding: 10px;
+  border-radius: var(--radius);
+  border: 2px dashed var(--primary);
+  background: var(--primary-light);
+  color: var(--primary);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 8px;
+}
+.generate-all-btn:hover:not(:disabled) {
+  background: var(--primary-soft);
+  border-style: solid;
+}
+.generate-all-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Progress text */
+.progress-text {
+  text-align: center;
+  font-size: 12px;
+  color: var(--primary);
+  margin-top: 4px;
+  display: none;
+}
+.progress-text.visible { display: block; }
+
+/* Counter chain button */
+.counter-chain-btn {
+  margin-top: 6px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  border: 1px solid var(--warning);
+  background: rgba(240,160,64,0.08);
+  font-size: 12px;
+  color: var(--warning);
+  cursor: pointer;
+  transition: all 0.15s;
+  display: none;
+}
+.counter-chain-btn.visible { display: inline-block; }
+.counter-chain-btn:hover { background: rgba(240,160,64,0.18); }
+
+/* Round badge */
+.round-badge {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  background: var(--warning);
+  color: #fff;
+  margin-left: 4px;
+}
+
+/* Recharge guide */
+.recharge-section { margin-top: 24px; }
+.recharge-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 10px;
+  border: none;
+  background: transparent;
+  color: var(--text-hint);
+  font-size: 13px;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.recharge-toggle:hover { color: var(--text-secondary); }
+.recharge-panel {
+  display: none;
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  padding: 20px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.8;
+}
+.recharge-panel.open { display: block; }
+.recharge-panel h4 {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 12px;
+}
+.recharge-panel ol {
+  padding-left: 20px;
+  margin-bottom: 14px;
+}
+.recharge-panel ol li { margin-bottom: 6px; }
+.recharge-panel .recharge-notice {
+  padding: 10px 14px;
+  border-radius: var(--radius-xs);
+  background: #fef3c7;
+  color: #92400e;
+  font-weight: 600;
+  font-size: 12px;
+  margin-top: 10px;
+}
+html.dark .recharge-panel .recharge-notice {
+  background: #3d2e0a;
+  color: #fbbf24;
+}
+
+/* Close bubble button */
+.result-bubble .close-bubble-btn {
+  position: absolute;
+  top: 12px; right: 72px;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-hint);
+}
+.result-bubble .close-bubble-btn:hover { color: var(--danger); background: rgba(231,76,60,0.1); }
+
+/* Stick toolbar */
+.result-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: var(--bg);
+  padding: 8px 0;
+  display: flex; gap: 6px; flex-wrap: wrap;
+  align-items: center;
+}
+.result-toolbar .toolbar-btn {
+  padding: 5px 10px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  font-size: 12px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.result-toolbar .toolbar-btn:hover { border-color: var(--primary); color: var(--primary); }
+.result-toolbar .toolbar-btn.danger:hover { border-color: var(--danger); color: var(--danger); }
+
+/* Editing state */
+.result-text.editing {
+  outline: 2px dashed var(--primary);
+  outline-offset: 4px;
+  border-radius: 4px;
+  padding: 4px;
+  background: var(--card-bg);
+}
+.edit-regenerate-btn {
+  display: none;
+  margin-top: 6px;
+  padding: 3px 8px;
+  border-radius: 10px;
+  border: 1px solid var(--primary);
+  background: var(--primary-light);
+  color: var(--primary);
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.edit-regenerate-btn.visible { display: inline-block; }
+.edit-regenerate-btn:hover { background: var(--primary-soft); }
 
 /* Responsive */
 @media (max-width: 767px) {
@@ -810,16 +1044,56 @@ body.dark .toast { background: #555; }
     max-height: none;
     overflow-y: visible;
   }
+  .target-vibe-row {
+    flex-direction: column;
+    gap: 0;
+  }
 }
 @media (min-width: 480px) {
-  .app-container { padding: 28px 20px 80px; }
-  .style-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
-  .style-card { padding: 14px 10px; }
+  .app-container { padding: 20px 20px 12px; }
+  .style-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .style-card { padding: 10px 8px; }
 }
 @media (max-width: 360px) {
   .style-grid { grid-template-columns: repeat(2, 1fr); }
   .target-tag { padding: 5px 8px; font-size: 12px; }
 }
+
+/* Error State */
+.error-state {
+  text-align: center;
+  padding: 48px 24px;
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  border: 1px dashed var(--border);
+}
+.error-state .error-icon { font-size: 48px; margin-bottom: 12px; }
+.error-state .error-msg {
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+.error-state .btn-retry {
+  padding: 10px 28px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--primary);
+  color: #fff;
+  font-size: 15px;
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+.error-state .btn-retry:hover { transform: scale(1.03); }
+
+/* Footer */
+.app-footer {
+  text-align: center;
+  padding: 16px 12px 24px;
+  color: var(--text-hint);
+  font-size: 12px;
+  line-height: 1.8;
+}
+.app-footer .footer-links { display: flex; flex-direction: column; gap: 4px; }
 </style>
 </head>
 <body>
@@ -829,44 +1103,46 @@ body.dark .toast { background: #555; }
   <!-- Header -->
   <header class="header">
     <div class="header-left">
-      <div class="logo">怼怼皮<img src="怼怼皮logo_nobg.png" alt="logo" class="logo-img" style="width:38px;height:44px;vertical-align:middle;margin-left:4px;"></div>
-      <div class="logo-sub">你身边最会说话的朋友，有点皮，但句句在理</div>
+      <div class="logo">怼怼皮<img src="怼怼皮logo_nobg.png" alt="logo" class="logo-img" style="width:30px;height:35px;vertical-align:middle;margin-left:4px;"></div>
+      <div class="logo-sub">该怼就怼，该礼就礼 —— 你的AI嘴替助手</div>
     </div>
     <button class="dark-toggle" id="darkToggle" title="切换暗黑模式">☀️</button>
   </header>
 
-  <!-- 对方是谁 -->
-  <section class="section">
-    <div class="section-label">🎯 对方是谁</div>
-    <div class="target-row" id="targetRow"></div>
-  </section>
-
-  <!-- 你的气场 -->
-  <section class="section">
-    <div class="section-label">💪 你的气场</div>
-    <div class="vibe-row" id="vibeRow"></div>
-  </section>
+  <!-- 对方是谁 + 你的气场 并排 -->
+  <div class="target-vibe-row">
+    <section class="section">
+      <div class="section-label">🎯 对方是谁</div>
+      <div class="target-row" id="targetRow"></div>
+      <input type="text" class="custom-input" id="customTargetInput" placeholder="例如：隔壁老王、相亲对象" maxlength="20">
+    </section>
+    <section class="section">
+      <div class="section-label">💪 你的气场</div>
+      <div class="vibe-row" id="vibeRow"></div>
+    </section>
+  </div>
 
   <!-- 选择风格 -->
   <section class="section">
     <div class="section-label">🗡️ 选择风格</div>
     <div class="style-grid" id="styleGrid"></div>
+    <input type="text" class="custom-input" id="customStyleInput" placeholder="" maxlength="30">
   </section>
 
-  <!-- 高频场景 -->
+  <!-- 场景描述 -->
   <section class="section">
-    <div class="section-label">📋 高频场景</div>
-    <div class="scenario-row" id="scenarioRow"></div>
+    <div class="section-label">📋 场景描述</div>
+    <div class="input-card scene-card">
+      <textarea id="sceneContext" placeholder="说说发生了什么，比如：同事在群里@我diss方案不行…" maxlength="300" rows="1"></textarea>
+      <button class="input-clear" id="sceneClear">✕</button>
+    </div>
+    <div class="char-count"><span id="sceneCharCount">0</span>/300</div>
   </section>
-
-  <!-- 场景引导 -->
-  <button class="scene-guide-btn" id="sceneGuideBtn">💡 不知道怎么描述？点这里快速选场景</button>
-  <div class="scene-guide-panel" id="sceneGuidePanel"></div>
 
   <!-- Input -->
   <section class="section">
     <div class="input-card">
-      <textarea id="userInput" placeholder="输入那句让你不爽的话..." maxlength="200" rows="2"></textarea>
+      <textarea id="userInput" placeholder="输入那句让你不爽的话..." maxlength="500" rows="2"></textarea>
       <button class="input-clear" id="inputClear">✕</button>
     </div>
     <div class="char-count"><span id="charCount">0</span>/200</div>
@@ -879,29 +1155,27 @@ body.dark .toast { background: #555; }
   <div class="stats-bar" id="statsBar"></div>
 
   <!-- Generate -->
-  <button class="generate-btn" id="generateBtn">生成回怼</button>
+  <div class="action-bar">
+    <button class="generate-btn" id="generateBtn">生成回怼</button>
+    <div class="progress-text" id="progressText"></div>
+    <button class="generate-all-btn" id="generateAllBtn">🎯 一键生成全部（8种风格）</button>
+  </div>
 </div><div class="right-panel">
 
   <!-- Results -->
-  <button class="favorites-toggle" id="favoritesToggle" style="display:none">⭐ 只看收藏</button>
   <section class="results-section" id="resultsSection"></section>
-  <div class="result-actions" id="resultActions" style="display:none">
-    <button class="again-btn" id="againBtn">🔄 再来一条</button>
-    <button class="clear-results-btn" id="clearResultsBtn">🗑 清空记录</button>
-</div></div><!-- /main-layout -->
+</div><!-- /main-layout -->
   </div>
 
   <!-- Upgrade overlay -->
   <div class="upgrade-overlay" id="upgradeOverlay">
     <div class="upgrade-card">
-      <h3>今日免费次数已用完（20/20）</h3>
-      <p class="upgrade-subtitle">还想继续玩？开启专家模式，不限次数随便用。</p>
+      <h3>今日免费次数已用完（30/30）</h3>
+      <p class="upgrade-subtitle">还想继续玩？绑定自己的 DeepSeek Key，不限次数随便用。</p>
       <div class="upgrade-info">
-        放心，这些事你得知道：<br>
-        💰 每次生成仅需约 0.0007 元，充 1 元可用很多次<br>
-        🔑 使用你自己的 DeepSeek 账户，费用由 DeepSeek 直接收取<br>
-        🙅 与我无关，我不经手你的任何费用<br>
-        🎁 DeepSeek 新用户通常有免费额度，大概率够你用很久
+        💡 约 0.001 元/条，DeepSeek 按量计费<br>
+        🔑 充 1 元够怼上千回，一杯奶茶钱直接怼到天荒地老<br>
+        🙅 Key 在自己账户里，费用由 DeepSeek 直接收取，与本站无关
       </div>
       <button class="upgrade-btn primary" id="upgradeGoBtn">去 DeepSeek 免费注册</button>
       <button class="upgrade-btn ghost" id="upgradeDismissBtn">下次再说</button>
@@ -913,7 +1187,7 @@ body.dark .toast { background: #555; }
     <div class="guide-card">
       <div class="guide-emoji">🦸</div>
       <h2>欢迎使用怼怼皮</h2>
-      <p class="guide-subtitle">你身边最会说话的朋友，有点皮，但句句在理</p>
+      <p class="guide-subtitle">该怼就怼，该礼就礼 —— 你的AI嘴替助手</p>
       <div class="guide-steps">
         1️⃣ 选对方身份<br>
         2️⃣ 选气场<br>
@@ -946,10 +1220,42 @@ body.dark .toast { background: #555; }
       <div class="mode-status" id="modeStatus"></div>
     </div>
   </section>
+
+  <!-- Recharge Guide -->
+  <section class="recharge-section">
+    <button class="recharge-toggle" id="rechargeToggle">
+      🔑 不想等免费额度？绑定你的 DeepSeek Key 即可无限使用
+    </button>
+    <div class="recharge-panel" id="rechargePanel">
+      <h4>🔑 3 步解锁无限使用</h4>
+      <ol>
+        <li>打开 <a href="https://platform.deepseek.com" target="_blank" style="color:var(--primary)">platform.deepseek.com</a>（DeepSeek 官网）→ 用手机号注册/登录</li>
+        <li>进入「API Keys」→ 点击「创建新的 API Key」→ 复制 Key<br><span style="color:var(--danger);font-size:12px;">⚠️ Key 创建后只显示一次，请立即复制保存到记事本！</span></li>
+        <li>回到本页面 → 在下方「设置」中粘贴 Key → 搞定！</li>
+      </ol>
+      <p style="margin-bottom:10px;">💡 约 0.001 元/条，DeepSeek 按量计费。充 1 元够怼上千回，一杯奶茶钱直接怼到天荒地老。</p>
+      <p style="margin-bottom:10px;">⚠️ <strong>费用由 DeepSeek 根据你的用量直接从你的账户扣除，与本网站完全无关。</strong>你的 Key、你的账户、你的消费——全程不经过我。</p>
+      <p style="font-size:12px;color:var(--text-hint);">免费通道偶尔余额不足会提示「车票发完」，绑定自己的 Key 就好。</p>
+    </div>
+  </section>
 </div>
 
+<!-- Error State -->
+<div class="error-state" id="errorState" style="display:none">
+  <div class="error-icon">😅</div>
+  <div class="error-msg" id="errorMsg">网络不太稳，请稍后重试</div>
+  <button class="btn-retry" onclick="location.reload()">🔄 重试</button>
+</div>
 <!-- Toast -->
-<div class="toast" id="toast"></div><script>
+<div class="toast" id="toast"></div>
+<!-- Footer -->
+<footer class="app-footer">
+  <div class="footer-links">
+    <span>🔒 你的输入仅用于生成回复，不会存储或用于训练</span>
+    <span>🛡️ 本工具仅供学习交流，AI 生成内容不代表本平台立场</span>
+  </div>
+</footer>
+<script>
 // ========== Constants ==========
 const SYSTEM_PROMPT = `你是一个专业的沟通教练。用户正在面临一个社交冲突。请根据用户选择的【对方是谁】【气场】【模式】，生成一句精准的回怼文案。
 
@@ -976,6 +1282,7 @@ const SYSTEM_PROMPT = `你是一个专业的沟通教练。用户正在面临一
 - 把天聊死：终极终结者。用一个让对方直接噎住、大脑宕机的短句瞬间结束对话，杀伤力拉满，让对方愣在原地想三天都想不出怎么回。
 - 真诚必杀技：灵魂暴击。用最真诚最走心的"我感受"句式直击对方良心，不骂不吼不阴阳，但让对方瞬间意识到自己有多过分，愧疚到主动道歉。
 - 嘴替模式：句句诛心，字字见血。用最锋利的语言撕开对方逻辑的伪装，直击要害七寸，让对方彻底破防、哑口无言。保持文明外壳但内核狠到骨子里，让旁观者都倒吸一口凉气。
+- 嘴笨救星：你不是来怼人的，你只是不知道怎么表达。用最自然得体的方式帮用户把想说的话组织出来，不卑不亢，让对方舒服，也让自己舒服。
 
 用户可能正在进行微调：
 - 如果用户要求"再狠一点"，请把上一轮的回怼改得更直接、更犀利，语气加重，但仍不带脏话。
@@ -1003,6 +1310,7 @@ const COUNTER_PROMPT = `你是一个社交场景模拟器。刚才发生了一�
 只输出一句对方可能的回应，要生活化口语化，像真人微信聊天。不要任何解释和前缀。`;
 
 const TARGETS = [
+  { emoji:'🔧', name:'通用' },
   { emoji:'🏢', name:'领导' },
   { emoji:'💼', name:'同事' },
   { emoji:'🎓', name:'同学' },
@@ -1010,7 +1318,7 @@ const TARGETS = [
   { emoji:'👨‍👩‍👧', name:'亲戚' },
   { emoji:'🎯', name:'客户' },
   { emoji:'🌐', name:'陌生人' },
-  { emoji:'🔧', name:'通用' },
+  { emoji:'✏️', name:'自定义' },
 ];
 const VIBES = [
   { emoji:'🐣', name:'软萌', desc:'学生/温和/可爱' },
@@ -1025,6 +1333,8 @@ const STYLES = [
   { name:'把天聊死', desc:'终极终结，一击毙命' },
   { name:'真诚必杀技', desc:'灵魂暴击，不战而胜' },
   { name:'嘴替模式', desc:'句句诛心，彻底破防' },
+  { name:'嘴笨救星', desc:'想不到合适的回复？帮你想好' },
+  { name:'✏️ 自定义', desc:'你的风格你来定' },
 ];
 const TECHNIQUE_MAP = {
   '直接开怼': { name:'正面硬刚', desc:'直指逻辑漏洞，一句封喉' },
@@ -1034,32 +1344,11 @@ const TECHNIQUE_MAP = {
   '把天聊死': { name:'终极终结', desc:'一击终结话题，让对方大脑宕机' },
   '真诚必杀技': { name:'以柔克刚', desc:'用真诚的力量直击灵魂' },
   '嘴替模式': { name:'直击要害', desc:'撕开伪装，一针见血' },
+  '嘴笨救星': { name:'帮你想好', desc:'不知道怎么开口？帮你把话说得体' },
+  '✏️ 自定义': { name:'自由发挥', desc:'按你设定的风格自由输出' },
 };
-const SCENARIOS = [
-  '你怎么连这个都不会？','你胖了/瘦了。','什么时候结婚？',
-  '你这方案不行，重做。','你是不是太敏感了？','我都是为你好。',
-];
-// Scene guide: categorized presets with suggested target
-const SCENE_GUIDES = [
-  { cat:'职场', items:[
-    { text:'同事说我方案不行', fill:'你这方案不行，重做。', target:'同事' },
-    { text:'领导让我背锅', fill:'这个责任不在我吧？你查清楚再说。', target:'领导' },
-    { text:'开会被当众diss', fill:'你这话什么意思？有意见可以直接私下聊。', target:'同事' },
-    { text:'客户无理要求', fill:'这个需求我们评估过，目前技术和排期都不支持。', target:'客户' },
-  ]},
-  { cat:'家庭', items:[
-    { text:'亲戚催婚', fill:'什么时候结婚？', target:'亲戚' },
-    { text:'爸妈说为我好', fill:'我都是为你好。', target:'亲戚' },
-    { text:'伴侣冷暴力', fill:'你又怎么了？我哪里惹到你了？', target:'伴侣' },
-  ]},
-  { cat:'社交', items:[
-    { text:'被人说太敏感', fill:'你是不是太敏感了？', target:'同学' },
-    { text:'被人说胖/瘦', fill:'你最近好像胖了。', target:'陌生人' },
-    { text:'被人说不会做事', fill:'你怎么连这个都不会？', target:'同事' },
-  ]},
-];
 const PROFANITY_LIST = ['fuck','shit','操你','傻逼','煞笔','妈逼','你妈逼','鸡巴','王八蛋','龟儿子','狗日的','婊子','贱人','去死吧','草泥马','日你','操蛋','肏','屌丝','妈蛋','狗屁','混蛋'];
-const FREE_LIMIT = 20;
+const FREE_LIMIT = 10;
 const API_URL = 'https://api.deepseek.com/chat/completions';
 const TIMEOUT_MS = 15000;
 
@@ -1067,14 +1356,17 @@ const TIMEOUT_MS = 15000;
 let state = {
   target: '通用',
   vibe: '平衡',
-  style: '优雅反击',
+  style: '直接开怼',
   mode: 'free',
   results: [],
   currentInput: '',
+  sceneContext: '',
   isGenerating: false,
-  darkMode: false,
+  darkMode: true,
   favorites: [],
   showFavorites: false,
+  customTarget: '',
+  customStyle: '',
 };
 
 // ========== Helpers ==========
@@ -1124,19 +1416,25 @@ function showToast(msg, duration = 2000) {
   toastTimer = setTimeout(() => t.classList.remove('show'), duration);
 }
 
+function showError(msg) {
+  hideError();
+  $('errorMsg').textContent = msg;
+  $('errorState').style.display = 'block';
+  // Hide results when showing error
+  const results = $('resultsContainer');
+  if (results) results.style.display = 'none';
+}
+
+function hideError() {
+  $('errorState').style.display = 'none';
+}
+
 // ========== Stats ==========
 function logUsage() {
   const stats = lsGet('stats', { combos:{}, scenes:{}, total:0 });
   stats.total++;
   const comboKey = `${state.target}|${state.vibe}|${state.style}`;
   stats.combos[comboKey] = (stats.combos[comboKey] || 0) + 1;
-  if (state.currentInput) {
-    // Track which scenario text was used
-    const matched = SCENARIOS.find(s => s === state.currentInput);
-    if (matched) {
-      stats.scenes[matched] = (stats.scenes[matched] || 0) + 1;
-    }
-  }
   lsSet('stats', stats);
   renderStats();
 }
@@ -1172,6 +1470,14 @@ function renderTargets() {
   row.innerHTML = TARGETS.map(t =>
     `<span class="target-tag${t.name === state.target ? ' selected' : ''}" data-target="${t.name}">${t.emoji} ${t.name}</span>`
   ).join('');
+  const customInput = $('customTargetInput');
+  if (state.target === '自定义') {
+    customInput.classList.add('visible');
+    customInput.value = state.customTarget;
+    customInput.focus();
+  } else {
+    customInput.classList.remove('visible');
+  }
 }
 function renderVibes() {
   const row = $('vibeRow');
@@ -1191,19 +1497,20 @@ function renderStyles() {
       <div class="style-desc">${s.desc}</div>
     </div>`
   ).join('');
-}
-function renderScenarios() {
-  $('scenarioRow').innerHTML = SCENARIOS.map(s =>
-    `<span class="scenario-tag" data-scenario="${s.replace(/"/g,'&quot;')}">${s}</span>`
-  ).join('');
-}
-function renderSceneGuide() {
-  $('sceneGuidePanel').innerHTML = SCENE_GUIDES.map(cat =>
-    `<div style="font-size:11px;font-weight:600;color:var(--text-hint);margin:6px 0 2px;padding-left:4px;">${cat.cat}</div>` +
-    cat.items.map(item =>
-      `<button class="scene-guide-item" data-fill="${item.fill.replace(/"/g,'&quot;')}" data-target="${item.target}">${item.text}</button>`
-    ).join('')
-  ).join('');
+  const customInput = $('customStyleInput');
+  if (state.style === '✏️ 自定义') {
+    customInput.classList.add('visible');
+    customInput.value = state.customStyle;
+    // Random placeholder
+    if (!customInput.placeholder) {
+      customInput.placeholder = Math.random() < 0.5
+        ? '留足面子，但把话说透'
+        : '句句客气，字字见血';
+    }
+    customInput.focus();
+  } else {
+    customInput.classList.remove('visible');
+  }
 }
 function renderUsage() {
   const el = $('usageText');
@@ -1229,8 +1536,6 @@ function renderModeStatus() {
 
 function renderResults() {
   const section = $('resultsSection');
-  const actions = $('resultActions');
-  const favToggle = $('favoritesToggle');
 
   // Filter results
   let results = state.results;
@@ -1239,44 +1544,82 @@ function renderResults() {
   }
 
   if (results.length === 0) {
-    section.innerHTML = state.showFavorites ? '<div style="text-align:center;color:var(--text-hint);padding:20px;">⭐ 还没有收藏任何句子</div>' : '';
-    actions.style.display = 'none';
-    favToggle.style.display = state.results.length > 0 ? '' : 'none';
+    section.innerHTML = state.showFavorites
+      ? '<div style="text-align:center;color:var(--text-hint);padding:20px;">⭐ 还没有收藏任何句子</div>'
+      : `<div style="text-align:center;color:var(--text-hint);padding:40px 20px;line-height:2;">
+        <div style="font-size:48px;margin-bottom:12px;">💬</div>
+        <div style="font-size:15px;font-weight:600;color:var(--text-secondary);margin-bottom:8px;">你的AI嘴替已就位</div>
+        <div style="font-size:13px;">左边选好风格，输入对方说的话<br>点「生成回怼」就能看到结果</div>
+        <div style="font-size:11px;margin-top:12px;opacity:0.6;">试试「嘴笨救星」风格，不会怼也能好好说话 ✨</div>
+      </div>`;
     return;
   }
 
-  favToggle.style.display = state.results.length > 0 ? '' : 'none';
-  favToggle.textContent = state.showFavorites ? '⭐ 显示全部' : '⭐ 只看收藏';
-  favToggle.className = 'favorites-toggle' + (state.showFavorites ? ' active' : '');
+  // Load feedback from localStorage
+  const feedbackList = lsGet('feedback', []);
 
-  section.innerHTML = results.map((r, i) => {
-    const isNew = state.results.indexOf(r) === 0 && !state.showFavorites;
+  // Build toolbar HTML (sticky at top)
+  const toolbarHTML = `
+    <div class="result-toolbar">
+      <button class="favorites-toggle${state.showFavorites ? ' active' : ''}" id="favoritesToggle">${state.showFavorites ? '⭐ 显示全部' : '⭐ 只看收藏'}</button>
+      <button class="toolbar-btn" id="againBtn">🔄 再来一条</button>
+      <button class="toolbar-btn" id="clearResultsBtn" style="${state.results.length > 2 ? '' : 'display:none'}">🗑 清空</button>
+      <button class="toolbar-btn copy-all-btn">📋 全部复制</button>
+      <button class="toolbar-btn" id="exportBtn">📥 导出对话</button>
+    </div>
+  `;
+
+  section.innerHTML = toolbarHTML + results.map((r, i) => {
+    const idx = state.results.indexOf(r);
+    const isNew = idx === 0 && !state.showFavorites;
     const starred = isFavorite(r.id);
     const technique = TECHNIQUE_MAP[r.style] || { name:'通用', desc:'高情商回怼' };
     const targetInfo = TARGETS.find(t => t.name === r.target) || { emoji:'🔧', name:'通用' };
     const vibeInfo = VIBES.find(v => v.name === r.vibe) || { emoji:'⚖️', name:'平衡' };
+    const round = r.round || 0;
+    const maxRound = 3;
+    const fb = feedbackList.find(f => f.id === r.id);
+    const liked = fb?.feedback === 'like';
+    const disliked = fb?.feedback === 'dislike';
+
+    // Counter section + chain button + refresh predict
+    let counterHTML = '';
+    if (r.counter) {
+      counterHTML = `<div class="counter-section visible">
+        <div class="counter-label">🔮 对方可能会回：</div>${escapeHtml(r.counter)}
+        <div style="margin-top:4px;display:flex;gap:4px;">
+          ${round < maxRound ? `<button class="counter-chain-btn visible" data-chain="${idx}" style="display:inline-block;margin-top:0;">💢 再怼一句</button>` : ''}
+          <button class="counter-chain-btn visible" data-refresh="${idx}" style="display:inline-block;margin-top:0;">🔄 换一句预判</button>
+        </div>
+      </div>`;
+    }
+
     return `
-    <div class="result-bubble${isNew ? ' newest' : ''}" data-index="${state.results.indexOf(r)}">
+    <div class="result-bubble${isNew ? ' newest' : ''}" data-index="${idx}">
+      <button class="close-bubble-btn" data-close="${idx}" title="关闭">✕</button>
       <button class="star-btn${starred ? ' starred' : ''}" data-star="${r.id}" title="收藏">${starred ? '⭐' : '☆'}</button>
-      <button class="copy-btn" data-index="${state.results.indexOf(r)}" title="复制">📋</button>
+      <button class="copy-btn" data-index="${idx}" title="复制">📋</button>
       <div class="result-badge">
         <span class="badge-target">${targetInfo.emoji} ${escapeHtml(r.target || '通用')}</span>
+        ${round > 0 ? `<span class="round-badge">R${round}</span>` : ''}
         <span class="badge-vibe">${vibeInfo.emoji} ${escapeHtml(r.vibe || '平衡')}</span>
         <span class="badge-style">💬 ${escapeHtml(r.style || '优雅反击')}</span>
       </div>
-      <div class="result-text">${escapeHtml(r.response)}</div>
+      <div class="result-text" data-edit="${idx}">${escapeHtml(r.response)}</div>
+      <button class="edit-regenerate-btn" data-editregenerate="${idx}">🔄 基于此重新生成</button>
       <div class="technique-tag">💡 ${technique.name}：${technique.desc}</div>
-      ${r.counter ? `<div class="counter-section visible"><div class="counter-label">🔮 对方可能会回：</div>${escapeHtml(r.counter)}</div>` : ''}
+      ${counterHTML}
       <div class="tune-btns">
-        <button class="tune-btn tune-harsher" data-index="${state.results.indexOf(r)}">🔥 再狠一点</button>
-        <button class="tune-btn tune-softer" data-index="${state.results.indexOf(r)}">❄️ 委婉一点</button>
-        <button class="tune-btn tune-counter" data-index="${state.results.indexOf(r)}" ${r.counter ? 'disabled' : ''}>🔮 预判对方回应</button>
+        <button class="tune-btn tune-harsher" data-index="${idx}">🔥 再狠一点</button>
+        <button class="tune-btn tune-softer" data-index="${idx}">❄️ 委婉一点</button>
+        <button class="tune-btn tune-counter" data-index="${idx}" ${r.counter ? 'disabled' : ''}>🔮 预判对方回应</button>
+      </div>
+      <div class="feedback-btns">
+        <button class="fb-btn fb-like${liked ? ' liked' : ''}" data-fb="like" data-fb-idx="${idx}">👍 赞</button>
+        <button class="fb-btn fb-dislike${disliked ? ' disliked' : ''}" data-fb="dislike" data-fb-idx="${idx}">👎 踩</button>
       </div>
     </div>
   `}).join('');
-
-  actions.style.display = 'flex';
-  $('clearResultsBtn').style.display = state.results.length > 2 ? '' : 'none';
 }
 
 function escapeHtml(str) {
@@ -1294,15 +1637,58 @@ function updateClearButton() {
     clear.classList.remove('visible');
   }
 }
+function updateSceneClearButton() {
+  const input = $('sceneContext');
+  const clear = $('sceneClear');
+  if (input.value.trim().length > 0) {
+    clear.classList.add('visible');
+  } else {
+    clear.classList.remove('visible');
+  }
+}
+function updateSceneCharCount() {
+  $('sceneCharCount').textContent = $('sceneContext').value.length;
+}
 
 // ========== API Call ==========
 async function callDeepSeek(messages) {
-  const key = getActiveKey();
-  if (!key) throw new Error('no_key');
-
+  // 专家模式：用户有自己的 Key → 直连 DeepSeek
+  if (getMode() === 'expert') {
+    const userKey = getUserKey();
+    if (!userKey) throw new Error('no_key');
+    return callDeepSeekDirect(messages, userKey);
+  }
+  // 免费模式：走后端代理
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), TIMEOUT_MS);
+  try {
+    const resp = await fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages }),
+      signal: controller.signal,
+    });
+    if (!resp.ok) {
+      if (resp.status === 429) throw new Error('free_limit');
+      if (resp.status === 402) throw new Error('admin_balance_low');
+      const err = await resp.json().catch(() => ({}));
+      if (err.error && err.error.includes('内容不')) throw new Error('content_safety');
+      throw new Error(err.error || 'api_error');
+    }
+    const data = await resp.json();
+    const content = data.choices?.[0]?.message?.content || '';
+    return content.trim();
+  } catch (e) {
+    if (e.name === 'AbortError') throw new Error('timeout');
+    throw e;
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
 
+async function callDeepSeekDirect(messages, key) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), TIMEOUT_MS);
   try {
     const resp = await fetch(API_URL, {
       method: 'POST',
@@ -1318,7 +1704,6 @@ async function callDeepSeek(messages) {
       }),
       signal: controller.signal,
     });
-
     if (!resp.ok) {
       const errData = await resp.json().catch(() => ({}));
       const errMsg = (errData.error?.message || '').toLowerCase();
@@ -1328,9 +1713,11 @@ async function callDeepSeek(messages) {
       if (errMsg.includes('content') || errMsg.includes('safety') || errMsg.includes('inappropriate')) {
         throw new Error('content_safety');
       }
-      throw new Error('api_error');
+      if (errMsg.includes('balance') || errMsg.includes('insufficient') || errMsg.includes('quota')) {
+        throw new Error('insufficient_balance');
+      }
+      throw new Error(`api_error_${resp.status}: ${errData.error?.message || 'unknown'}`);
     }
-
     const data = await resp.json();
     const content = data.choices?.[0]?.message?.content || '';
     return content.trim();
@@ -1343,7 +1730,7 @@ async function callDeepSeek(messages) {
 }
 
 // ========== Actions ==========
-async function doGenerate(inputText, tuneAction) {
+async function doGenerate(inputText, tuneAction, extra) {
   if (state.isGenerating) return;
   const input = inputText.trim();
   if (!input) { showToast('请输入内容'); return; }
@@ -1362,22 +1749,43 @@ async function doGenerate(inputText, tuneAction) {
   const btn = $('generateBtn');
   btn.textContent = '生成中...';
   btn.disabled = true;
+  $('generateAllBtn').disabled = true;
+
+  // Resolve target and style (handle custom)
+  let effectiveTarget = state.target;
+  let effectiveStyle = state.style;
+  if (effectiveTarget === '自定义') {
+    effectiveTarget = state.customTarget || '对方';
+  }
+  if (effectiveStyle === '✏️ 自定义') {
+    effectiveStyle = state.customStyle || '得体回击';
+  }
+
+  // Build feedback avoidance hint
+  let feedbackHint = '';
+  const feedbackList = lsGet('feedback', []);
+  const dislikedCount = feedbackList.filter(f =>
+    f.feedback === 'dislike' && f.input === input && f.style === effectiveStyle
+  ).length;
+  if (dislikedCount >= 2) {
+    feedbackHint = '\n注意：以下风格已被用户多次点踩，请务必生成与之前完全不同的内容和措辞。';
+  }
 
   let messages = [];
   if (tuneAction === 'harsher' || tuneAction === 'softer') {
     const lastResult = state.results[0];
     messages = [
-      { role: 'system', content: SYSTEM_PROMPT },
-      { role: 'user', content: `对方是谁：${state.target}\n气场：${state.vibe}\n模式：${state.style}\n对方的原话：${state.currentInput}` },
+      { role: 'system', content: SYSTEM_PROMPT + feedbackHint },
+      { role: 'user', content: `对方是谁：${effectiveTarget}\n气场：${state.vibe}\n模式：${effectiveStyle}\n场景背景：${state.sceneContext || '无'}\n对方的原话：${state.currentInput}` },
       { role: 'assistant', content: lastResult.response },
       { role: 'user', content: tuneAction === 'harsher' ? '再狠一点' : '委婉一点' },
     ];
   } else {
     messages = [
-      { role: 'system', content: SYSTEM_PROMPT },
-      { role: 'user', content: `对方是谁：${state.target}\n气场：${state.vibe}\n模式：${state.style}\n对方的原话：${input}` },
+      { role: 'system', content: SYSTEM_PROMPT + feedbackHint },
+      { role: 'user', content: `对方是谁：${effectiveTarget}\n气场：${state.vibe}\n模式：${effectiveStyle}\n场景背景：${state.sceneContext || '无'}\n对方的原话：${input}` },
     ];
-    state.currentInput = input;
+    if (!tuneAction) state.currentInput = input;
   }
 
   try {
@@ -1388,16 +1796,19 @@ async function doGenerate(inputText, tuneAction) {
         input: state.currentInput,
         response: response || '(生成内容为空，请重试)',
         timestamp: Date.now(),
-        target: state.target,
+        target: effectiveTarget,
         vibe: state.vibe,
-        style: state.style,
+        style: effectiveStyle,
         counter: null,
+        round: (extra && extra.round) || 0,
+        parentId: (extra && extra.parentId) || null,
       });
       if (getMode() === 'free') incrementUsage();
       logUsage();
     }
     btn.textContent = '生成回怼';
     btn.disabled = false;
+    $('generateAllBtn').disabled = ($('userInput').value.trim().length === 0);
     state.isGenerating = false;
     renderResults();
     renderUsage();
@@ -1405,6 +1816,7 @@ async function doGenerate(inputText, tuneAction) {
   } catch (e) {
     btn.textContent = '生成回怼';
     btn.disabled = false;
+    $('generateAllBtn').disabled = ($('userInput').value.trim().length === 0);
     state.isGenerating = false;
     if (e.message === 'timeout') {
       showToast('生成超时，请检查网络后重试');
@@ -1418,8 +1830,20 @@ async function doGenerate(inputText, tuneAction) {
       showToast('请先在设置中配置 API Key');
       $('settingsPanel').classList.add('open');
       $('settingsToggle').scrollIntoView({ behavior: 'smooth' });
+    } else if (e.message === 'free_limit') {
+      showToast('今日免费额度已用完 ⚡ 可切换到专家模式使用自己的 Key，不限次数！', 4000);
+      $('settingsPanel').classList.add('open');
+      $('settingsToggle').scrollIntoView({ behavior: 'smooth' });
+    } else if (e.message === 'admin_balance_low') {
+      showToast('服务暂时不可用 😞 请切换到专家模式，使用自己的 DeepSeek Key', 4000);
+      $('settingsPanel').classList.add('open');
+      $('settingsToggle').scrollIntoView({ behavior: 'smooth' });
+    } else if (e.message === 'insufficient_balance') {
+      showToast('🚗 今天的免费车票已经发完啦～绑定你的专属 DeepSeek API Key，随时发车！（Key 在自己账户里，费用由 DeepSeek 直接收取，与本站无关）', 4000);
+      $('settingsPanel').classList.add('open');
+      $('settingsToggle').scrollIntoView({ behavior: 'smooth' });
     } else {
-      showToast('生成失败，请稍后重试');
+      showToast(`生成失败：${e.message || '未知错误'}。请检查网络或API Key`);
     }
     return null;
   }
@@ -1441,7 +1865,7 @@ async function doFineTune(bubbleIndex, tuneAction) {
 
   const messages = [
     { role: 'system', content: SYSTEM_PROMPT },
-    { role: 'user', content: `对方是谁：${result.target}\n气场：${result.vibe}\n模式：${result.style}\n对方的原话：${result.input}` },
+    { role: 'user', content: `对方是谁：${result.target}\n气场：${result.vibe}\n模式：${result.style}\n场景背景：${state.sceneContext || '无'}\n对方的原话：${result.input}` },
     { role: 'assistant', content: result.response },
     { role: 'user', content: tuneAction === 'harsher' ? '再狠一点' : '委婉一点' },
   ];
@@ -1457,6 +1881,16 @@ async function doFineTune(bubbleIndex, tuneAction) {
     if (e.message === 'timeout') showToast('生成超时，请检查网络后重试');
     else if (e.message === 'auth_error') showToast('API Key 无效，请检查设置');
     else if (e.message === 'content_safety') showToast('内容审核未通过，请修改后重试');
+    else if (e.message === 'free_limit') {
+      showToast('今日免费额度已用完 ⚡ 可切换到专家模式使用自己的 Key', 4000);
+      $('settingsPanel').classList.add('open');
+    } else if (e.message === 'admin_balance_low') {
+      showToast('服务暂时不可用，请切换到专家模式使用自己的 Key', 4000);
+      $('settingsPanel').classList.add('open');
+    } else if (e.message === 'insufficient_balance') {
+      showToast('🚗 今天的免费车票已经发完啦～绑定你的专属 DeepSeek API Key，随时发车！（Key 在自己账户里，费用由 DeepSeek 直接收取，与本站无关）', 4000);
+      $('settingsPanel').classList.add('open');
+    }
     else showToast('微调失败，请稍后重试');
   }
 
@@ -1465,10 +1899,11 @@ async function doFineTune(bubbleIndex, tuneAction) {
   renderUsage();
 }
 
-async function doPredictCounter(bubbleIndex) {
+async function doPredictCounter(bubbleIndex, force) {
   if (state.isGenerating) return;
   const result = state.results[bubbleIndex];
-  if (!result || result.counter) return;
+  if (!result) return;
+  if (!force && result.counter) return;
 
   if (getMode() === 'free' && getRemaining() <= 0) {
     $('upgradeOverlay').classList.add('visible');
@@ -1494,6 +1929,16 @@ async function doPredictCounter(bubbleIndex) {
   } catch (e) {
     if (e.message === 'timeout') showToast('生成超时，请检查网络后重试');
     else if (e.message === 'auth_error') showToast('API Key 无效，请检查设置');
+    else if (e.message === 'free_limit') {
+      showToast('今日免费额度已用完 ⚡ 可切换到专家模式使用自己的 Key', 4000);
+      $('settingsPanel').classList.add('open');
+    } else if (e.message === 'admin_balance_low') {
+      showToast('服务暂时不可用，请切换到专家模式使用自己的 Key', 4000);
+      $('settingsPanel').classList.add('open');
+    } else if (e.message === 'insufficient_balance') {
+      showToast('🚗 今天的免费车票已经发完啦～绑定你的专属 DeepSeek API Key，随时发车！（Key 在自己账户里，费用由 DeepSeek 直接收取，与本站无关）', 4000);
+      $('settingsPanel').classList.add('open');
+    }
     else showToast('预判失败，请稍后重试');
   }
 
@@ -1502,11 +1947,173 @@ async function doPredictCounter(bubbleIndex) {
   renderUsage();
 }
 
+// ========== Counter Chain: 怼来怼去 ==========
+async function doCounterChain(bubbleIndex) {
+  if (state.isGenerating) return;
+  const result = state.results[bubbleIndex];
+  if (!result || !result.counter) return;
+  const round = (result.round || 0) + 1;
+  if (round > 3) { showToast('最多怼3轮，先歇一歇吧～'); return; }
+
+  if (getMode() === 'free' && getRemaining() <= 0) {
+    $('upgradeOverlay').classList.add('visible');
+    return;
+  }
+
+  state.isGenerating = true;
+
+  // Resolve effective target/style
+  let effectiveTarget = result.target || '通用';
+  let effectiveStyle = result.style || '优雅反击';
+
+  const messages = [
+    { role: 'system', content: SYSTEM_PROMPT },
+    { role: 'user', content: `对方是谁：${effectiveTarget}\n气场：${result.vibe || '平衡'}\n模式：${effectiveStyle}\n场景背景：${state.sceneContext || '无'}\n对方的原话：${result.counter}` },
+  ];
+
+  try {
+    const response = await callDeepSeek(messages);
+    if (response) {
+      state.results.unshift({
+        id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+        input: result.counter,
+        response: response,
+        timestamp: Date.now(),
+        target: effectiveTarget,
+        vibe: result.vibe || '平衡',
+        style: effectiveStyle,
+        counter: null,
+        round: round,
+        parentId: result.id,
+      });
+      if (getMode() === 'free') incrementUsage();
+    }
+  } catch (e) {
+    if (e.message === 'timeout') showToast('生成超时，请检查网络后重试');
+    else if (e.message === 'free_limit') {
+      showToast('今日免费额度已用完 ⚡ 可切换到专家模式使用自己的 Key', 4000);
+      $('settingsPanel').classList.add('open');
+    } else if (e.message === 'admin_balance_low') {
+      showToast('服务暂时不可用，请切换到专家模式使用自己的 Key', 4000);
+      $('settingsPanel').classList.add('open');
+    } else if (e.message === 'insufficient_balance') {
+      showToast('🚗 今天的免费车票已经发完啦～绑定你的专属 DeepSeek API Key，随时发车！（Key 在自己账户里，费用由 DeepSeek 直接收取，与本站无关）', 4000);
+      $('settingsPanel').classList.add('open');
+    } else showToast(`生成失败：${e.message || '未知错误'}`);
+  }
+
+  state.isGenerating = false;
+  renderResults();
+  renderUsage();
+}
+
+// ========== 一键生成全部（串行8种风格） ==========
+async function doGenerateAll(inputText) {
+  if (state.isGenerating) return;
+  const input = inputText.trim();
+  if (!input) { showToast('请输入内容'); return; }
+  if (hasProfanity(input)) {
+    $('profanityWarning').style.display = 'block';
+    return;
+  }
+  $('profanityWarning').style.display = 'none';
+
+  // Get presets only (skip custom)
+  const presetStyles = STYLES.filter(s => s.name !== '✏️ 自定义');
+  const needCount = presetStyles.length;
+
+  if (getMode() === 'free') {
+    const remaining = getRemaining();
+    if (remaining < needCount) {
+      showToast(`免费额度不足（需要${needCount}次，剩余${remaining}次），请绑定自己的Key或明天再来`);
+      return;
+    }
+  }
+
+  state.isGenerating = true;
+  state.currentInput = input;
+  $('generateBtn').disabled = true;
+  $('generateAllBtn').disabled = true;
+  const progress = $('progressText');
+  progress.classList.add('visible');
+
+  let success = 0;
+  let fail = 0;
+
+  // Resolve effective target
+  let effectiveTarget = state.target;
+  if (effectiveTarget === '自定义') {
+    effectiveTarget = state.customTarget || '对方';
+  }
+
+  for (let i = 0; i < presetStyles.length; i++) {
+    const style = presetStyles[i];
+    progress.textContent = `正在生成 ${i + 1}/${presetStyles.length} 风格：${style.name}…`;
+
+    const messages = [
+      { role: 'system', content: SYSTEM_PROMPT },
+      { role: 'user', content: `对方是谁：${effectiveTarget}\n气场：${state.vibe}\n模式：${style.name}\n场景背景：${state.sceneContext || '无'}\n对方的原话：${input}` },
+    ];
+
+    try {
+      const response = await callDeepSeek(messages);
+      if (response) {
+        state.results.unshift({
+          id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+          input: input,
+          response: response,
+          timestamp: Date.now(),
+          target: effectiveTarget,
+          vibe: state.vibe,
+          style: style.name,
+          counter: null,
+          round: 0,
+          parentId: null,
+        });
+        if (getMode() === 'free') incrementUsage();
+        success++;
+        renderResults();
+      } else {
+        fail++;
+      }
+    } catch (e) {
+      fail++;
+      if (e.message === 'free_limit') {
+        showToast('今日免费额度已用完 ⚡ 可切换到专家模式使用自己的 Key', 4000);
+        $('settingsPanel').classList.add('open');
+        break;
+      } else if (e.message === 'admin_balance_low') {
+        showToast('服务暂时不可用，请切换到专家模式使用自己的 Key', 4000);
+        $('settingsPanel').classList.add('open');
+        break;
+      } else if (e.message === 'insufficient_balance') {
+        showToast('🚗 今天的免费车票已经发完啦～绑定你的专属 DeepSeek API Key，随时发车！（Key 在自己账户里，费用由 DeepSeek 直接收取，与本站无关）', 4000);
+        $('settingsPanel').classList.add('open');
+        break; // Stop on balance error
+      }
+    }
+  }
+
+  progress.textContent = '';
+  progress.classList.remove('visible');
+  state.isGenerating = false;
+  $('generateBtn').disabled = false;
+  $('generateAllBtn').disabled = false;
+  renderResults();
+  renderUsage();
+
+  if (success > 0) {
+    showToast(`🎉 8种风格全部生成完成！成功 ${success} 次${fail > 0 ? `，${fail} 次失败` : ''}`);
+  } else {
+    showToast('生成失败，请稍后重试');
+  }
+}
+
 // ========== Event Handlers ==========
 // Dark mode
 $('darkToggle').addEventListener('click', () => {
   state.darkMode = !state.darkMode;
-  document.body.classList.toggle('dark', state.darkMode);
+  document.documentElement.classList.toggle('dark', state.darkMode);
   $('darkToggle').textContent = state.darkMode ? '🌙' : '☀️';
   lsSet('dark_mode', state.darkMode);
 });
@@ -1518,6 +2125,10 @@ $('targetRow').addEventListener('click', (e) => {
   state.target = tag.dataset.target;
   lsSet('target', state.target);
   renderTargets();
+});
+$('customTargetInput').addEventListener('input', () => {
+  state.customTarget = $('customTargetInput').value.trim();
+  lsSet('custom_target', state.customTarget);
 });
 
 // Vibe
@@ -1537,35 +2148,24 @@ $('styleGrid').addEventListener('click', (e) => {
   lsSet('style', state.style);
   renderStyles();
 });
-
-// Scenarios
-$('scenarioRow').addEventListener('click', (e) => {
-  const tag = e.target.closest('.scenario-tag');
-  if (!tag) return;
-  $('userInput').value = tag.dataset.scenario;
-  updateClearButton();
-  updateCharCount();
-  $('userInput').focus();
+$('customStyleInput').addEventListener('input', () => {
+  state.customStyle = $('customStyleInput').value.trim();
+  lsSet('custom_style', state.customStyle);
 });
 
-// Scene guide toggle
-$('sceneGuideBtn').addEventListener('click', () => {
-  $('sceneGuidePanel').classList.toggle('open');
+// Scene context
+$('sceneContext').addEventListener('input', () => {
+  state.sceneContext = $('sceneContext').value;
+  updateSceneClearButton();
+  updateSceneCharCount();
+  lsSet('scene_context', state.sceneContext);
 });
-// Scene guide item click
-$('sceneGuidePanel').addEventListener('click', (e) => {
-  const item = e.target.closest('.scene-guide-item');
-  if (!item) return;
-  $('userInput').value = item.dataset.fill;
-  if (item.dataset.target && item.dataset.target !== '通用') {
-    state.target = item.dataset.target;
-    lsSet('target', state.target);
-    renderTargets();
-  }
-  updateClearButton();
-  updateCharCount();
-  $('userInput').focus();
-  $('sceneGuidePanel').classList.remove('open');
+$('sceneClear').addEventListener('click', () => {
+  $('sceneContext').value = '';
+  state.sceneContext = '';
+  lsSet('scene_context', '');
+  updateSceneClearButton();
+  updateSceneCharCount();
 });
 
 // Input
@@ -1573,11 +2173,22 @@ $('userInput').addEventListener('input', () => {
   updateClearButton();
   updateCharCount();
   $('profanityWarning').style.display = 'none';
+  $('generateAllBtn').disabled = $('userInput').value.trim().length === 0 || state.isGenerating;
 });
 $('userInput').addEventListener('keydown', (e) => {
   if (e.key === 'Enter' && !e.shiftKey) {
     e.preventDefault();
-    doGenerate($('userInput').value);
+    if (e.ctrlKey || e.metaKey) {
+      doGenerateAll($('userInput').value);
+    } else {
+      doGenerate($('userInput').value);
+    }
+  }
+  if (e.key === 'Escape') {
+    $('userInput').value = '';
+    updateClearButton();
+    updateCharCount();
+    $('generateAllBtn').disabled = true;
   }
 });
 $('inputClear').addEventListener('click', () => {
@@ -1596,6 +2207,16 @@ $('generateBtn').addEventListener('click', () => {
   doGenerate($('userInput').value);
 });
 
+// Generate All
+$('generateAllBtn').addEventListener('click', () => {
+  doGenerateAll($('userInput').value);
+});
+
+// Recharge guide toggle
+$('rechargeToggle').addEventListener('click', () => {
+  $('rechargePanel').classList.toggle('open');
+});
+
 // Results delegation
 $('resultsSection').addEventListener('click', async (e) => {
   const copyBtn = e.target.closest('.copy-btn');
@@ -1603,6 +2224,16 @@ $('resultsSection').addEventListener('click', async (e) => {
   const softerBtn = e.target.closest('.tune-softer');
   const counterBtn = e.target.closest('.tune-counter');
   const starBtn = e.target.closest('.star-btn');
+  const chainBtn = e.target.closest('[data-chain]');
+  const refreshBtn = e.target.closest('[data-refresh]');
+  const fbBtn = e.target.closest('.fb-btn');
+  const copyAllBtn = e.target.closest('.copy-all-btn');
+  const closeBtn = e.target.closest('.close-bubble-btn');
+  const editRegenBtn = e.target.closest('.edit-regenerate-btn');
+  const exportBtn = e.target.closest('#exportBtn');
+  const againBtn = e.target.closest('#againBtn');
+  const clearBtn = e.target.closest('#clearResultsBtn');
+  const favToggleBtn = e.target.closest('#favoritesToggle');
 
   if (copyBtn) {
     const idx = parseInt(copyBtn.dataset.index);
@@ -1617,8 +2248,119 @@ $('resultsSection').addEventListener('click', async (e) => {
     }
   }
 
+  if (copyAllBtn) {
+    const visible = state.showFavorites
+      ? state.results.filter(r => isFavorite(r.id))
+      : state.results;
+    const allText = visible.map(r => r.response).join('\n');
+    if (!allText) { showToast('没有可复制的内容'); return; }
+    try {
+      await navigator.clipboard.writeText(allText);
+      copyAllBtn.textContent = '✅ 已复制';
+      copyAllBtn.classList.add('copied');
+      setTimeout(() => { copyAllBtn.textContent = '📋 全部复制'; copyAllBtn.classList.remove('copied'); }, 1500);
+    } catch(e) {
+      showToast('复制失败，请手动复制');
+    }
+  }
+
   if (starBtn) {
     toggleFavorite(starBtn.dataset.star);
+  }
+
+  if (closeBtn) {
+    const idx = parseInt(closeBtn.dataset.close);
+    state.results.splice(idx, 1);
+    renderResults();
+    renderUsage();
+  }
+
+  if (chainBtn) {
+    const idx = parseInt(chainBtn.dataset.chain);
+    if (idx >= 0) await doCounterChain(idx);
+  }
+
+  if (refreshBtn) {
+    const idx = parseInt(refreshBtn.dataset.refresh);
+    await doPredictCounter(idx, true);
+  }
+
+  if (editRegenBtn) {
+    const idx = parseInt(editRegenBtn.dataset.editregenerate);
+    const result = state.results[idx];
+    if (!result) return;
+    const editedText = document.querySelector(`.result-text[data-edit="${idx}"]`)?.textContent?.trim();
+    if (!editedText) return;
+    state.currentInput = editedText;
+    await doGenerate(editedText);
+  }
+
+  if (exportBtn) {
+    const all = state.showFavorites
+      ? state.results.filter(r => isFavorite(r.id))
+      : state.results;
+    if (!all.length) { showToast('没有可导出的内容'); return; }
+    let txt = '怼怼皮 对话记录\n================\n\n';
+    // Reverse to show oldest first
+    [...all].reverse().forEach(r => {
+      const roundTag = r.round > 0 ? `·R${r.round}` : '';
+      txt += `[你] ${r.input}\n`;
+      txt += `[怼怼皮·${r.style}${roundTag}] ${r.response}\n`;
+      if (r.counter) txt += `[对方预判] ${r.counter}\n`;
+      txt += '---\n';
+    });
+    const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `怼怼皮_对话记录_${new Date().toISOString().slice(0,10)}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('📥 对话已导出');
+  }
+
+  if (againBtn) {
+    doGenerate(state.currentInput);
+  }
+
+  if (clearBtn) {
+    state.results = [];
+    state.currentInput = '';
+    state.showFavorites = false;
+    renderResults();
+  }
+
+  if (favToggleBtn) {
+    state.showFavorites = !state.showFavorites;
+    renderResults();
+  }
+
+  if (fbBtn) {
+    const idx = parseInt(fbBtn.dataset.fbIdx);
+    const type = fbBtn.dataset.fb;
+    const result = state.results[idx];
+    if (!result) return;
+    const feedbackList = lsGet('feedback', []);
+    const existIdx = feedbackList.findIndex(f => f.id === result.id);
+    if (existIdx >= 0) {
+      if (feedbackList[existIdx].feedback === type) {
+        feedbackList.splice(existIdx, 1);
+      } else {
+        feedbackList[existIdx].feedback = type;
+      }
+    } else {
+      feedbackList.push({
+        id: result.id,
+        input: result.input,
+        style: result.style,
+        target: result.target,
+        vibe: result.vibe,
+        response: result.response,
+        feedback: type,
+      });
+    }
+    lsSet('feedback', feedbackList);
+    renderResults();
   }
 
   if (harsherBtn) {
@@ -1637,21 +2379,47 @@ $('resultsSection').addEventListener('click', async (e) => {
   }
 });
 
-// Favorites toggle
-$('favoritesToggle').addEventListener('click', () => {
-  state.showFavorites = !state.showFavorites;
-  renderResults();
+// Double-click to edit result text
+$('resultsSection').addEventListener('dblclick', (e) => {
+  const textEl = e.target.closest('.result-text');
+  if (!textEl) return;
+  const idx = parseInt(textEl.dataset.edit);
+  const result = state.results[idx];
+  if (!result) return;
+  // Toggle editing
+  if (textEl.contentEditable === 'true') {
+    textEl.contentEditable = 'false';
+    textEl.classList.remove('editing');
+    // Save edit
+    result.response = textEl.textContent.trim();
+    // Show regenerate button
+    const regenBtn = document.querySelector(`.edit-regenerate-btn[data-editregenerate="${idx}"]`);
+    if (regenBtn) regenBtn.classList.add('visible');
+  } else {
+    textEl.contentEditable = 'true';
+    textEl.classList.add('editing');
+    textEl.focus();
+    // Select all text
+    const range = document.createRange();
+    range.selectNodeContents(textEl);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
 });
 
-// Again + Clear
-$('againBtn').addEventListener('click', () => {
-  doGenerate(state.currentInput);
-});
-$('clearResultsBtn').addEventListener('click', () => {
-  state.results = [];
-  state.currentInput = '';
-  state.showFavorites = false;
-  renderResults();
+// Click outside to exit editing
+document.addEventListener('click', (e) => {
+  const editing = document.querySelector('.result-text.editing');
+  if (!editing) return;
+  if (editing.contains(e.target)) return;
+  const idx = parseInt(editing.dataset.edit);
+  editing.contentEditable = 'false';
+  editing.classList.remove('editing');
+  const result = state.results[idx];
+  if (result) result.response = editing.textContent.trim();
+  const regenBtn = document.querySelector(`.edit-regenerate-btn[data-editregenerate="${idx}"]`);
+  if (regenBtn) regenBtn.classList.add('visible');
 });
 
 // Upgrade overlay
@@ -1745,12 +2513,18 @@ $('modeStatus').addEventListener('click', (e) => {
 function init() {
   state.target = lsGet('target', '通用');
   state.vibe = lsGet('vibe', '平衡');
-  state.style = lsGet('style', '优雅反击');
-  state.darkMode = lsGet('dark_mode', false);
+  state.style = lsGet('style', '直接开怼');
+  state.darkMode = lsGet('dark_mode', true);
   state.favorites = lsGet('favorites', []);
+  state.customTarget = lsGet('custom_target', '');
+  state.customStyle = lsGet('custom_style', '');
+  state.sceneContext = lsGet('scene_context', '');
+  $('customTargetInput').value = state.customTarget;
+  $('customStyleInput').value = state.customStyle;
+  $('sceneContext').value = state.sceneContext;
 
   if (state.darkMode) {
-    document.body.classList.add('dark');
+    document.documentElement.classList.add('dark');
     $('darkToggle').textContent = '🌙';
   }
 
@@ -1762,11 +2536,11 @@ function init() {
   renderTargets();
   renderVibes();
   renderStyles();
-  renderScenarios();
-  renderSceneGuide();
   renderUsage();
   renderStats();
   updateClearButton();
+  updateSceneClearButton();
+  $('generateAllBtn').disabled = true;
 
   const guideShown = lsGet('guide_shown', false);
   if (!guideShown) {
@@ -1778,6 +2552,11 @@ function init() {
   const usage = getDailyUsage();
   lsSet('daily_usage', usage);
   renderUsage();
+}
+
+// Register Service Worker for PWA
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').catch(function() {});
 }
 
 init();
